@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Library - Information Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a6b8a;
+            --primary-dark: #0e4f68;
+            --primary-light: #d0eaf5;
+            --accent: #2bb5a0;
+            --accent-warm: #e6a817;
+            --secondary: #0d2233;
+            --success: #27ae7a;
+            --warning: #e6a817;
+            --danger: #e05252;
+            --surface: #f4f8fb;
+            --surface-card: #ffffff;
+            --gray-100: #eef3f7;
+            --gray-200: #d9e5ee;
+            --gray-300: #b8cedd;
+            --gray-400: #8aacbf;
+            --gray-500: #5d8aa0;
+            --gray-600: #3d6980;
+            --gray-700: #254d61;
+            --gray-800: #132f3e;
+            --gray-900: #0d2233;
+            --radius: 14px;
+            --radius-sm: 8px;
+            --shadow-sm: 0 2px 8px rgba(26,107,138,0.08);
+            --shadow: 0 6px 20px rgba(13,34,51,0.1);
+            --shadow-lg: 0 12px 36px rgba(13,34,51,0.14);
+            --shadow-xl: 0 24px 56px rgba(13,34,51,0.18);
+            --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--surface); color: var(--gray-800); line-height: 1.75; min-height: 100vh; }
+
+        header {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary-dark) 60%, var(--primary) 100%);
+            color: white; position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 4px 24px rgba(13,34,51,0.35);
+        }
+        header::after { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; opacity: 0.6; }
+
+        .header-content { max-width: 1400px; margin: 0 auto; padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; position: relative; z-index: 1; }
+
+        .logo { display: flex; align-items: center; gap: 0.875rem; }
+        .logo-icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-warm) 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 4px 16px rgba(43,181,160,0.4); transition: var(--transition-bounce); }
+        .logo:hover .logo-icon { transform: rotate(-8deg) scale(1.08); }
+        .logo-text h1 { font-family: 'Playfair Display', serif; font-size: 1.45rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+        .logo-text span { font-size: 0.78rem; opacity: 0.75; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; }
+
+        .header-actions { display: flex; align-items: center; gap: 1rem; }
+        .search-box { display: flex; align-items: center; background: rgba(255,255,255,0.12); border-radius: 50px; padding: 0.5rem 1.1rem; border: 1px solid rgba(255,255,255,0.18); transition: var(--transition); backdrop-filter: blur(12px); }
+        .search-box:focus-within { background: rgba(255,255,255,0.22); border-color: var(--accent); box-shadow: 0 0 0 3px rgba(43,181,160,0.2); }
+        .search-box input { background: none; border: none; color: white; padding: 0.25rem 0.5rem; font-size: 0.875rem; width: 200px; outline: none; font-family: 'DM Sans', sans-serif; }
+        .search-box input::placeholder { color: rgba(255,255,255,0.6); }
+        .search-box i { color: rgba(255,255,255,0.7); font-size: 0.85rem; }
+        .progress-tracker { display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.12); padding: 0.5rem 1.1rem; border-radius: 50px; font-size: 0.82rem; font-weight: 500; border: 1px solid rgba(255,255,255,0.15); }
+        .progress-tracker i { color: var(--accent-warm); }
+
+        nav { background: var(--gray-900); border-bottom: 2px solid rgba(43,181,160,0.25); }
+        .nav-container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+        .nav-links { display: flex; list-style: none; overflow-x: auto; scrollbar-width: none; }
+        .nav-links::-webkit-scrollbar { display: none; }
+        .nav-links li { flex-shrink: 0; }
+        .nav-links a { display: flex; align-items: center; gap: 0.5rem; padding: 1rem 1.25rem; color: var(--gray-400); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: var(--transition-fast); border-bottom: 3px solid transparent; white-space: nowrap; position: relative; }
+        .nav-links a::before { content: ''; position: absolute; inset: 0; background: rgba(43,181,160,0.06); opacity: 0; transition: var(--transition-fast); }
+        .nav-links a:hover::before, .nav-links a.active::before { opacity: 1; }
+        .nav-links a:hover, .nav-links a.active { color: white; border-bottom-color: var(--accent); }
+
+        /* Reflection nav item — purple accent */
+        .nav-links a.reflection-nav { color: #c4b5fd; }
+        .nav-links a.reflection-nav:hover, .nav-links a.reflection-nav.active { color: #ddd6fe; border-bottom-color: #a78bfa; }
+        .nav-links a.reflection-nav::before { background: rgba(167,139,250,0.08); }
+
+        main { max-width: 1400px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+        .welcome-section { background: linear-gradient(135deg, var(--secondary) 0%, var(--primary-dark) 55%, #1a5f7a 100%); color: white; border-radius: var(--radius); padding: 3.5rem; margin-bottom: 2.5rem; position: relative; overflow: hidden; box-shadow: var(--shadow-xl); }
+        .welcome-section::before { content: ''; position: absolute; top: -60px; right: -60px; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, rgba(43,181,160,0.18) 0%, transparent 70%); }
+        .welcome-section::after { content: ''; position: absolute; bottom: -40px; left: 30%; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(230,168,23,0.12) 0%, transparent 70%); }
+        .welcome-content { position: relative; z-index: 1; max-width: 700px; }
+        .welcome-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(43,181,160,0.2); border: 1px solid rgba(43,181,160,0.4); color: var(--accent); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.3rem 0.8rem; border-radius: 50px; margin-bottom: 1rem; }
+        .welcome-section h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
+        .welcome-section p { color: rgba(255,255,255,0.75); font-size: 1.05rem; margin-bottom: 2rem; }
+        .quick-stats { display: flex; gap: 2.5rem; flex-wrap: wrap; }
+        .stat-item { text-align: center; }
+        .stat-number { font-size: 2.2rem; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--accent); line-height: 1; }
+        .stat-label { font-size: 0.78rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.2rem; }
+
+        .hero-image-banner { width: 100%; height: 200px; border-radius: var(--radius); overflow: hidden; margin-bottom: 2.5rem; position: relative; box-shadow: var(--shadow-lg); }
+        .hero-image-banner img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7) saturate(1.2); transition: transform 0.8s cubic-bezier(0.4,0,0.2,1); }
+        .hero-image-banner:hover img { transform: scale(1.03); }
+        .hero-image-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(13,34,51,0.7) 0%, rgba(13,34,51,0.1) 60%); display: flex; align-items: center; padding: 2rem 3rem; }
+        .hero-image-overlay h3 { font-family: 'Playfair Display', serif; color: white; font-size: 1.6rem; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+
+        .section-heading { display: flex; align-items: center; gap: 0.75rem; font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--gray-800); margin-bottom: 1.5rem; }
+        .section-heading i { color: var(--primary); font-size: 1.1rem; }
+
+        .topics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
+        .topic-card { background: var(--surface-card); border-radius: var(--radius); padding: 1.75rem; box-shadow: var(--shadow-sm); cursor: pointer; transition: var(--transition-bounce); border: 1.5px solid var(--gray-200); position: relative; overflow: hidden; }
+        .topic-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--primary), var(--accent)); transform: scaleX(0); transform-origin: left; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .topic-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--primary-light); }
+        .topic-card:hover::after { transform: scaleX(1); }
+
+        /* Reflection card purple accent */
+        .topic-card.reflection-card::after { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+        .topic-card.reflection-card:hover { border-color: #e9d5ff; }
+
+        .topic-card-image { width: 100%; height: 130px; border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem; position: relative; background: var(--gray-100); }
+        .topic-card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .topic-card:hover .topic-card-image img { transform: scale(1.07); }
+        .topic-card-image .img-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; font-size: 2rem; color: white; border-radius: 10px; }
+        .topic-card:nth-child(1) .img-placeholder { background: linear-gradient(135deg,#1a6b8a,#2bb5a0); }
+        .topic-card:nth-child(2) .img-placeholder { background: linear-gradient(135deg,#2563eb,#6366f1); }
+        .topic-card:nth-child(3) .img-placeholder { background: linear-gradient(135deg,#059669,#0d9488); }
+        .topic-card:nth-child(4) .img-placeholder { background: linear-gradient(135deg,#d97706,#f59e0b); }
+        .topic-card:nth-child(5) .img-placeholder { background: linear-gradient(135deg,#dc2626,#e05252); }
+        .topic-card:nth-child(6) .img-placeholder { background: linear-gradient(135deg,#7c3aed,#a78bfa); }
+        .topic-card h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--gray-900); }
+        .topic-card p { font-size: 0.875rem; color: var(--gray-500); margin-bottom: 1rem; line-height: 1.6; }
+        .topic-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--gray-400); }
+        .topic-meta span { display: flex; align-items: center; gap: 0.3rem; }
+
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: sectionIn 0.5s cubic-bezier(0.4,0,0.2,1); }
+        @keyframes sectionIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+        .content-header { background: white; border-radius: var(--radius); padding: 2.25rem; margin-bottom: 1.75rem; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); }
+
+        .topic-hero-image { width: 100%; height: 180px; border-radius: 10px; overflow: hidden; margin-bottom: 1.5rem; position: relative; }
+        .topic-hero-image img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.75); }
+        .topic-hero-image .topic-hero-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+        .topic-hero-image .topic-hero-overlay { position: absolute; inset: 0; display: flex; align-items: flex-end; padding: 1.25rem 1.5rem; background: linear-gradient(to top, rgba(13,34,51,0.6) 0%, transparent 60%); }
+        .topic-hero-image .topic-hero-label { color: rgba(255,255,255,0.85); font-size: 0.78rem; font-style: italic; }
+
+        .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gray-400); margin-bottom: 1rem; }
+        .breadcrumb a { color: var(--primary); text-decoration: none; transition: var(--transition-fast); }
+        .breadcrumb a:hover { color: var(--accent); text-decoration: underline; }
+
+        .content-title { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+        .content-title .icon-wrapper { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white; flex-shrink: 0; }
+        .content-title h2 { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--gray-900); }
+        .content-description { color: var(--gray-500); font-size: 0.95rem; }
+
+        .content-tabs { display: flex; gap: 0.25rem; border-bottom: 2px solid var(--gray-200); margin-bottom: 2rem; overflow-x: auto; padding-bottom: 0; }
+        .content-tab { padding: 0.875rem 1.5rem; background: none; border: none; font-size: 0.875rem; font-weight: 500; color: var(--gray-400); cursor: pointer; transition: var(--transition-fast); white-space: nowrap; position: relative; border-radius: 8px 8px 0 0; font-family: 'DM Sans', sans-serif; }
+        .content-tab::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); }
+        .content-tab:hover { color: var(--gray-700); background: var(--gray-100); }
+        .content-tab.active { color: var(--primary); background: var(--primary-light); }
+        .content-tab.active::after { transform: scaleX(1); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: tabIn 0.35s cubic-bezier(0.4,0,0.2,1); }
+        @keyframes tabIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .article-content { background: white; border-radius: var(--radius); padding: 2.5rem; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); }
+        .article-image-block { margin: 2rem 0; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); }
+        .article-image-block img { width: 100%; height: 260px; object-fit: cover; display: block; }
+        .img-caption { background: var(--gray-100); color: var(--gray-500); font-size: 0.8rem; font-style: italic; padding: 0.5rem 1rem; text-align: center; border-top: 1px solid var(--gray-200); }
+
+        .article-content h3 { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--gray-900); margin: 2.25rem 0 0.9rem; padding-top: 1.25rem; border-top: 1px solid var(--gray-100); }
+        .article-content h3:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+        .article-content h4 { font-size: 1rem; font-weight: 600; color: var(--primary); margin: 1.5rem 0 0.6rem; }
+        .article-content p { margin-bottom: 1rem; color: var(--gray-600); font-size: 0.95rem; }
+        .article-content ul, .article-content ol { margin: 0.75rem 0 1.5rem 1.5rem; color: var(--gray-600); font-size: 0.95rem; }
+        .article-content li { margin-bottom: 0.4rem; }
+        .article-content strong { color: var(--gray-900); }
+
+        table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow-sm); }
+        thead tr { background: var(--primary); color: white; }
+        th { padding: 0.9rem 1rem; text-align: left; font-weight: 600; }
+        td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--gray-100); color: var(--gray-700); }
+        tbody tr:hover { background: var(--surface); }
+
+        .highlight-box { background: var(--primary-light); border-left: 4px solid var(--primary); padding: 1.25rem 1.5rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 1.5rem 0; transition: var(--transition-fast); }
+        .highlight-box:hover { box-shadow: var(--shadow-sm); }
+        .highlight-box.warning { background: #fef3c7; border-left-color: var(--warning); }
+        .highlight-box.success { background: #d1fae5; border-left-color: var(--success); }
+        .highlight-box.purple { background: #f5f3ff; border-left-color: #7c3aed; }
+        .highlight-box h4 { margin: 0 0 0.5rem; color: var(--gray-900); font-size: 0.95rem; font-weight: 600; }
+        .highlight-box p { margin: 0; font-size: 0.9rem; }
+
+        .key-terms { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+        .term-card { background: var(--surface); border-radius: var(--radius-sm); padding: 1rem; border: 1px solid var(--gray-200); transition: var(--transition-fast); }
+        .term-card:hover { border-color: var(--primary); background: var(--primary-light); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+        .term-card dt { font-weight: 600; color: var(--primary); margin-bottom: 0.25rem; font-size: 0.9rem; }
+        .term-card dd { font-size: 0.85rem; color: var(--gray-500); }
+
+        .video-section { background: white; border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); }
+        .video-section h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; color: var(--gray-900); }
+        .video-section h3 i { color: var(--danger); }
+        .youtube-embed-wrapper { position: relative; aspect-ratio: 16/9; width: 100%; border-radius: var(--radius-sm) var(--radius-sm) 0 0; overflow: hidden; }
+        .youtube-embed-wrapper iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.5rem; }
+        .video-card { border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; transition: var(--transition); background: var(--surface); }
+        .video-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); border-color: var(--primary-light); }
+        .video-thumbnail { position: relative; aspect-ratio: 16/9; background: var(--gray-200); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .video-thumbnail img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .video-card:hover .video-thumbnail img { transform: scale(1.05); }
+        .video-thumbnail .play-btn { position: absolute; width: 56px; height: 56px; background: rgba(255,255,255,0.95); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--danger); font-size: 1.3rem; box-shadow: var(--shadow-lg); transition: var(--transition-bounce); }
+        .video-card:hover .play-btn { transform: scale(1.12); background: white; }
+        .video-info { padding: 1.1rem; }
+        .video-info h4 { font-size: 0.9rem; font-weight: 600; color: var(--gray-800); margin-bottom: 0.4rem; line-height: 1.4; }
+        .video-info p { font-size: 0.8rem; color: var(--gray-400); margin-bottom: 0.75rem; }
+        .video-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--primary); text-decoration: none; font-size: 0.82rem; font-weight: 600; transition: var(--transition-fast); }
+        .video-link:hover { color: var(--accent); }
+
+        .additional-module { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); margin-top: 1.5rem; overflow: hidden; transition: var(--transition); box-shadow: var(--shadow-sm); }
+        .additional-module:hover { box-shadow: var(--shadow); }
+        .module-header { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.5rem; background: linear-gradient(90deg, var(--primary-light), transparent); border-bottom: 1px solid var(--gray-200); font-weight: 600; color: var(--primary); font-size: 0.95rem; }
+        .module-body { padding: 1.5rem; }
+
+        .quiz-section { background: white; border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); }
+        .quiz-section h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.6rem; color: var(--gray-900); }
+        .quiz-section h3 i { color: var(--primary); }
+        .quiz-intro { color: var(--gray-500); margin-bottom: 1.5rem; font-size: 0.9rem; }
+        .quiz-progress { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; padding: 1rem 1.25rem; background: var(--surface); border-radius: var(--radius-sm); border: 1px solid var(--gray-200); }
+        .quiz-progress-bar { flex: 1; height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden; }
+        .quiz-progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 4px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+        .quiz-progress-text { font-size: 0.82rem; color: var(--gray-500); white-space: nowrap; }
+        .quiz-question { display: none; }
+        .quiz-question.active { display: block; animation: tabIn 0.3s ease; }
+        .question-number { font-size: 0.72rem; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+        .question-text { font-size: 1.05rem; color: var(--gray-900); margin-bottom: 1.5rem; font-weight: 500; }
+        .quiz-options { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1.5rem; }
+        .quiz-option { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.2rem; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition-fast); background: white; }
+        .quiz-option:hover { border-color: var(--primary); background: var(--primary-light); }
+        .quiz-option.selected { border-color: var(--primary); background: var(--primary-light); }
+        .quiz-option.correct { border-color: var(--success); background: #d1fae5; }
+        .quiz-option.incorrect { border-color: var(--danger); background: #fee2e2; }
+        .quiz-option input { display: none; }
+        .option-marker { width: 26px; height: 26px; border: 2px solid var(--gray-300); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; color: var(--gray-400); flex-shrink: 0; transition: var(--transition-fast); }
+        .quiz-option.selected .option-marker { border-color: var(--primary); background: var(--primary); color: white; }
+        .quiz-option.correct .option-marker { border-color: var(--success); background: var(--success); color: white; }
+        .quiz-option.incorrect .option-marker { border-color: var(--danger); background: var(--danger); color: white; }
+        .option-text { flex: 1; font-size: 0.92rem; color: var(--gray-700); }
+        .quiz-feedback { padding: 0.9rem 1.1rem; border-radius: var(--radius-sm); margin-bottom: 1rem; display: none; font-size: 0.9rem; font-weight: 500; }
+        .quiz-feedback.show { display: block; animation: tabIn 0.3s ease; }
+        .quiz-feedback.correct { background: #d1fae5; color: #065f46; }
+        .quiz-feedback.incorrect { background: #fee2e2; color: #991b1b; }
+
+        .btn { padding: 0.7rem 1.4rem; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: var(--transition-fast); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border: 2px solid transparent; font-family: 'DM Sans', sans-serif; letter-spacing: 0.01em; min-width: 140px; text-align: center; white-space: nowrap; }
+        .btn-primary { background: var(--primary); color: white; border-color: var(--primary); }
+        .btn-primary:hover:not(:disabled) { background: var(--primary-dark); border-color: var(--primary-dark); box-shadow: 0 4px 12px rgba(26,107,138,0.3); transform: translateY(-1px); }
+        .btn-secondary { background: white; color: var(--gray-600); border-color: var(--gray-300); }
+        .btn-secondary:hover:not(:disabled) { background: var(--gray-100); border-color: var(--gray-400); transform: translateY(-1px); }
+        .btn:active:not(:disabled) { transform: translateY(0) !important; }
+        .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+        .quiz-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+
+        .quiz-results { text-align: center; padding: 2.5rem; display: none; }
+        .quiz-results.show { display: block; animation: sectionIn 0.4s ease; }
+        .results-icon { width: 88px; height: 88px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.6rem; margin: 0 auto 1.5rem; }
+        .results-icon.excellent { background: #d1fae5; color: var(--success); }
+        .results-icon.good { background: var(--primary-light); color: var(--primary); }
+        .results-icon.needs-work { background: #fef3c7; color: var(--warning); }
+        .results-score { font-size: 3rem; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--gray-900); margin-bottom: 0.4rem; }
+        .results-message { font-size: 1rem; color: var(--gray-500); margin-bottom: 2rem; }
+
+        /* ── REFLECTION STYLES ── */
+        .reflection-hero {
+            background: linear-gradient(135deg, #2d1b69 0%, #5b21b6 55%, #7c3aed 100%);
+            color: white; border-radius: var(--radius); padding: 3.5rem; margin-bottom: 2.5rem;
+            position: relative; overflow: hidden; box-shadow: var(--shadow-xl);
+        }
+        .reflection-hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, rgba(167,139,250,0.2) 0%, transparent 70%); }
+        .reflection-hero::after { content: ''; position: absolute; bottom: -40px; left: 20%; width: 240px; height: 240px; border-radius: 50%; background: radial-gradient(circle, rgba(196,181,253,0.12) 0%, transparent 70%); }
+        .reflection-hero-content { position: relative; z-index: 1; max-width: 750px; }
+        .reflection-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(167,139,250,0.25); border: 1px solid rgba(167,139,250,0.45); color: #c4b5fd; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.3rem 0.8rem; border-radius: 50px; margin-bottom: 1rem; }
+        .reflection-hero h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
+        .reflection-hero p { color: rgba(255,255,255,0.78); font-size: 1.05rem; }
+
+        .reflection-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
+
+        .reflection-card {
+            background: white; border-radius: var(--radius); padding: 2rem;
+            box-shadow: var(--shadow-sm); border: 1.5px solid #e9d5ff;
+            position: relative; overflow: hidden; transition: var(--transition-bounce);
+        }
+        .reflection-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: #a78bfa; }
+        .reflection-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+
+        .reflection-card-icon { width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, #7c3aed, #a78bfa); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: white; margin-bottom: 1.25rem; box-shadow: 0 4px 14px rgba(124,58,237,0.35); }
+        .reflection-card h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gray-900); margin-bottom: 0.75rem; }
+        .reflection-card p { font-size: 0.9rem; color: var(--gray-600); line-height: 1.7; }
+
+        .reflection-quote-block {
+            background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+            border-radius: var(--radius); padding: 2.5rem;
+            margin-bottom: 2.5rem; position: relative;
+            border: 1px solid #ddd6fe; box-shadow: var(--shadow-sm);
+        }
+        .reflection-quote-block .quote-icon { font-size: 4rem; color: #a78bfa; line-height: 1; margin-bottom: 1rem; font-family: Georgia, serif; }
+        .reflection-quote-block blockquote { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: #4c1d95; line-height: 1.7; font-style: italic; margin-bottom: 1rem; }
+        .reflection-quote-block .quote-author { font-size: 0.875rem; color: #7c3aed; font-weight: 600; }
+
+        .reflection-timeline { background: white; border-radius: var(--radius); padding: 2.5rem; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); margin-bottom: 2.5rem; }
+        .reflection-timeline h3 { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--gray-900); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem; }
+        .reflection-timeline h3 i { color: #7c3aed; }
+
+        .timeline-item { display: flex; gap: 1.5rem; margin-bottom: 2rem; position: relative; }
+        .timeline-item:not(:last-child)::after { content: ''; position: absolute; left: 19px; top: 44px; bottom: -24px; width: 2px; background: linear-gradient(to bottom, #a78bfa, #ddd6fe); }
+        .timeline-dot { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #7c3aed, #a78bfa); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.85rem; flex-shrink: 0; box-shadow: 0 3px 10px rgba(124,58,237,0.35); }
+        .timeline-content h4 { font-size: 1rem; font-weight: 600; color: var(--gray-900); margin-bottom: 0.4rem; }
+        .timeline-content p { font-size: 0.9rem; color: var(--gray-500); line-height: 1.65; }
+        .timeline-tag { display: inline-block; background: #f5f3ff; color: #7c3aed; font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 50px; border: 1px solid #ddd6fe; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        .reflection-takeaways { background: white; border-radius: var(--radius); padding: 2.5rem; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); margin-bottom: 2.5rem; }
+        .reflection-takeaways h3 { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--gray-900); margin-bottom: 1.75rem; display: flex; align-items: center; gap: 0.75rem; }
+        .reflection-takeaways h3 i { color: #7c3aed; }
+
+        .takeaway-list { display: flex; flex-direction: column; gap: 1.1rem; }
+        .takeaway-item { display: flex; align-items: flex-start; gap: 1rem; padding: 1.25rem; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid var(--gray-200); transition: var(--transition-fast); }
+        .takeaway-item:hover { border-color: #a78bfa; background: #faf5ff; transform: translateX(4px); }
+        .takeaway-number { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #7c3aed, #a78bfa); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; }
+        .takeaway-text strong { display: block; font-size: 0.95rem; color: var(--gray-900); margin-bottom: 0.25rem; }
+        .takeaway-text span { font-size: 0.875rem; color: var(--gray-500); }
+
+        .reflection-closing { background: linear-gradient(135deg, #2d1b69 0%, #5b21b6 100%); color: white; border-radius: var(--radius); padding: 3rem; text-align: center; box-shadow: var(--shadow-xl); position: relative; overflow: hidden; }
+        .reflection-closing::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(167,139,250,0.15) 0%, transparent 70%); }
+        .reflection-closing h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 1rem; position: relative; z-index: 1; }
+        .reflection-closing p { color: rgba(255,255,255,0.78); font-size: 1rem; max-width: 580px; margin: 0 auto; position: relative; z-index: 1; line-height: 1.8; }
+
+        footer { background: var(--gray-900); color: var(--gray-400); padding: 3rem 2rem; margin-top: 3rem; }
+        .footer-content { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+        .footer-section h4 { color: white; font-size: 1rem; margin-bottom: 1rem; }
+        .footer-section ul { list-style: none; }
+        .footer-section li { margin-bottom: 0.5rem; }
+        .footer-section a { color: var(--gray-400); text-decoration: none; font-size: 0.875rem; transition: var(--transition-fast); }
+        .footer-section a:hover { color: var(--accent); }
+        .footer-bottom { max-width: 1400px; margin: 2rem auto 0; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08); text-align: center; font-size: 0.82rem; }
+
+        .scroll-top { position: fixed; bottom: 2rem; right: 2rem; width: 48px; height: 48px; background: var(--primary); color: white; border: none; border-radius: 50%; font-size: 1.1rem; cursor: pointer; box-shadow: var(--shadow-lg); opacity: 0; visibility: hidden; transition: var(--transition); z-index: 999; }
+        .scroll-top.visible { opacity: 1; visibility: visible; }
+        .scroll-top:hover { background: var(--accent); transform: translateY(-3px); }
+
+        @media (max-width: 768px) {
+            .header-content { padding: 1rem; }
+            .logo-text h1 { font-size: 1.15rem; }
+            .search-box { display: none; }
+            main { padding: 1rem; }
+            .welcome-section, .reflection-hero { padding: 2rem 1.5rem; }
+            .welcome-section h2, .reflection-hero h2 { font-size: 1.5rem; }
+            .content-header, .article-content, .video-section, .quiz-section { padding: 1.25rem; }
+            .content-tabs { gap: 0; }
+            .content-tab { padding: 0.75rem 0.875rem; font-size: 0.8rem; }
+            .video-grid { grid-template-columns: 1fr; }
+            .btn { min-width: 120px; }
+            .reflection-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-content">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+            <div class="logo-text">
+                <h1>Digital Library</h1>
+                <span>Information Management</span>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search topics…" id="searchInput">
+            </div>
+            <div class="progress-tracker">
+                <i class="fas fa-trophy"></i>
+                <span>Progress: <strong id="overallProgress">0%</strong></span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<nav>
+    <div class="nav-container">
+        <ul class="nav-links">
+            <li><a href="#" class="active" data-section="home"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="#" data-section="isr"><i class="fas fa-database"></i> IS&amp;R</a></li>
+            <li><a href="#" data-section="types"><i class="fas fa-sitemap"></i> Types of IS</a></li>
+            <li><a href="#" data-section="tools"><i class="fas fa-tools"></i> Tools &amp; Tech</a></li>
+            <li><a href="#" data-section="quality"><i class="fas fa-chart-line"></i> Data Quality</a></li>
+            <li><a href="#" data-section="governance"><i class="fas fa-shield-alt"></i> Information Governance</a></li>
+            <li><a href="#" data-section="reflection" class="reflection-nav"><i class="fas fa-pen-fancy"></i> My Reflection</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main>
+
+    <!-- ══════════ HOME ══════════ -->
+    <section id="home" class="content-section active">
+        <div class="welcome-section">
+            <div class="welcome-content">
+                <div class="welcome-badge"><i class="fas fa-star"></i> Learning Resource</div>
+                <h2>Welcome to Information Management</h2>
+                <p>Explore how organizations collect, store, organize, and govern information. Comprehensive reading materials, educational videos, and interactive quizzes await you.</p>
+                <div class="quick-stats">
+                    <div class="stat-item"><div class="stat-number">5</div><div class="stat-label">Topics</div></div>
+                    <div class="stat-item"><div class="stat-number">15+</div><div class="stat-label">Videos</div></div>
+                    <div class="stat-item"><div class="stat-number">25</div><div class="stat-label">Quiz Questions</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-image-banner">
+            <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1400&q=80" alt="Library and information management">
+            <div class="hero-image-overlay"><h3>Knowledge Starts Here</h3></div>
+        </div>
+
+        <div class="section-heading"><i class="fas fa-book"></i> Explore Topics</div>
+
+        <div class="topics-grid">
+            <div class="topic-card" data-topic="isr">
+                <div class="topic-card-image"><div class="img-placeholder"><i class="fas fa-database"></i></div></div>
+                <h3>Information Storage &amp; Retrieval</h3>
+                <p>Learn about databases, indexing, search algorithms, and how information is organized for efficient access.</p>
+                <div class="topic-meta"><span><i class="fas fa-clock"></i> 25 min</span><span><i class="fas fa-video"></i> 3 videos</span></div>
+            </div>
+            <div class="topic-card" data-topic="types">
+                <div class="topic-card-image"><div class="img-placeholder"><i class="fas fa-sitemap"></i></div></div>
+                <h3>Types of Information Systems</h3>
+                <p>Discover TPS, MIS, DSS, EIS, ERP and understand their roles in organizations.</p>
+                <div class="topic-meta"><span><i class="fas fa-clock"></i> 20 min</span><span><i class="fas fa-video"></i> 3 videos</span></div>
+            </div>
+            <div class="topic-card" data-topic="tools">
+                <div class="topic-card-image"><div class="img-placeholder"><i class="fas fa-tools"></i></div></div>
+                <h3>Tools &amp; Technologies</h3>
+                <p>Explore databases, cloud computing, data analytics, and emerging technologies.</p>
+                <div class="topic-meta"><span><i class="fas fa-clock"></i> 30 min</span><span><i class="fas fa-video"></i> 3 videos</span></div>
+            </div>
+            <div class="topic-card" data-topic="quality">
+                <div class="topic-card-image"><div class="img-placeholder"><i class="fas fa-chart-line"></i></div></div>
+                <h3>Data Quality Issues</h3>
+                <p>Understand common data quality challenges and learn strategies to maintain accurate, reliable data.</p>
+                <div class="topic-meta"><span><i class="fas fa-clock"></i> 20 min</span><span><i class="fas fa-video"></i> 3 videos</span></div>
+            </div>
+            <div class="topic-card" data-topic="governance">
+                <div class="topic-card-image"><div class="img-placeholder"><i class="fas fa-shield-alt"></i></div></div>
+                <h3>Information Governance</h3>
+                <p>Learn about policies, compliance, security frameworks, and best practices for information assets.</p>
+                <div class="topic-meta"><span><i class="fas fa-clock"></i> 25 min</span><span><i class="fas fa-video"></i> 3 videos</span></div>
+            </div>
+            <div class="topic-card reflection-card" data-topic="reflection">
+                <div class="topic-card-image"><div class="img-placeholder"><i class="fas fa-pen-fancy"></i></div></div>
+                <h3>My Reflection</h3>
+                <p>Personal insights, key takeaways, and growth reflections from studying Information Management.</p>
+                <div class="topic-meta"><span><i class="fas fa-user"></i> Personal</span><span><i class="fas fa-star"></i> Featured</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ IS&R ══════════ -->
+    <section id="isr" class="content-section">
+        <div class="content-header">
+            <div class="topic-hero-image">
+                <div class="topic-hero-placeholder" style="background:linear-gradient(135deg,#1a6b8a,#2bb5a0);display:flex;align-items:center;justify-content:center;font-size:4rem;color:rgba(255,255,255,0.25);height:100%;"><i class="fas fa-database"></i></div>
+                <div class="topic-hero-overlay"><span class="topic-hero-label">📷 Replace with a server/database image from Unsplash</span></div>
+            </div>
+            <div class="breadcrumb"><a href="#" data-section="home">Home</a><i class="fas fa-chevron-right"></i><span>Information Storage &amp; Retrieval</span></div>
+            <div class="content-title"><div class="icon-wrapper" style="background:linear-gradient(135deg,#1a6b8a,#2bb5a0);"><i class="fas fa-database"></i></div><h2>Information Storage &amp; Retrieval</h2></div>
+            <p class="content-description">Understanding how information is stored, organized, indexed, and retrieved is fundamental to information management. This topic covers databases, search mechanisms, indexing languages, and modern retrieval systems.</p>
+        </div>
+        <div class="content-tabs">
+            <button class="content-tab active" data-tab="isr-learn"><i class="fas fa-book-reader"></i> Learn</button>
+            <button class="content-tab" data-tab="isr-videos"><i class="fas fa-video"></i> Videos</button>
+            <button class="content-tab" data-tab="isr-quiz"><i class="fas fa-question-circle"></i> Quiz</button>
+        </div>
+        <div id="isr-learn" class="tab-content active">
+            <div class="article-content">
+                <h3>What is Information Storage &amp; Retrieval?</h3>
+                <p><strong>Information Storage and Retrieval (IS&amp;R)</strong> refers to the systematic processes involved in collecting, storing, organizing, and accessing information efficiently. It forms the backbone of modern information systems, enabling organizations to manage vast amounts of data and retrieve relevant information when needed.</p>
+                <p>The field encompasses both the technical infrastructure (databases, servers, storage media) and the methodologies (indexing, classification, search algorithms) that make information accessible.</p>
+                <div class="article-image-block">
+                    <img src="https://cdn.educba.com/academy/wp-content/uploads/2020/02/Relational-Database-Model.jpg" alt="Database storage diagram">
+                    <p class="img-caption">Figure 1: Overview of a relational database storage model</p>
+                </div>
+                <div class="highlight-box"><h4><i class="fas fa-lightbulb"></i> Key Concept</h4><p>The goal of IS&amp;R is to ensure that the right information reaches the right person at the right time in the right format.</p></div>
+                <h3>Core Components of IS&amp;R</h3>
+                <h4>1. Storage Systems</h4>
+                <ul>
+                    <li><strong>Relational Databases:</strong> Structured data in tables (MySQL, PostgreSQL, Oracle)</li>
+                    <li><strong>NoSQL Databases:</strong> Unstructured/semi-structured data (MongoDB, Cassandra)</li>
+                    <li><strong>Data Warehouses:</strong> Centralized repositories for analytics</li>
+                    <li><strong>Cloud Storage:</strong> Scalable on-demand storage (AWS S3, Azure Blob)</li>
+                    <li><strong>Distributed File Systems:</strong> Multi-server reliability and performance</li>
+                </ul>
+                <h4>2. Indexing and Classification</h4>
+                <div class="key-terms">
+                    <dl class="term-card"><dt>Controlled Vocabulary</dt><dd>A standardized set of terms for indexing and retrieval consistency.</dd></dl>
+                    <dl class="term-card"><dt>Thesaurus</dt><dd>Shows relationships between terms (broader, narrower, related).</dd></dl>
+                    <dl class="term-card"><dt>Metadata</dt><dd>Data about data — describes content, context, and structure.</dd></dl>
+                    <dl class="term-card"><dt>Classification Scheme</dt><dd>Systematic subject arrangement (e.g., Dewey Decimal, Library of Congress).</dd></dl>
+                </div>
+                <h4>3. Retrieval Methods</h4>
+                <ul>
+                    <li><strong>Boolean Search:</strong> AND, OR, NOT operators</li>
+                    <li><strong>Natural Language Processing:</strong> Everyday language queries</li>
+                    <li><strong>Semantic Search:</strong> Meaning and context beyond keywords</li>
+                    <li><strong>Faceted Search:</strong> Filter by multiple dimensions</li>
+                </ul>
+                <h3>Evaluating Retrieval Systems</h3>
+                <div class="highlight-box success"><h4><i class="fas fa-bullseye"></i> Precision</h4><p>Proportion of retrieved documents that are actually relevant. High precision = fewer irrelevant results.</p></div>
+                <div class="highlight-box"><h4><i class="fas fa-expand-arrows-alt"></i> Recall</h4><p>Proportion of all relevant documents that were retrieved. High recall = finding most relevant items.</p></div>
+                <h3>Modern IS&amp;R Trends</h3>
+                <ul>
+                    <li><strong>AI-Powered Search:</strong> ML improves relevance over time</li>
+                    <li><strong>Knowledge Graphs:</strong> Connect entities and relationships</li>
+                    <li><strong>Voice Search:</strong> Natural language via voice assistants</li>
+                    <li><strong>Federated Search:</strong> Query multiple databases simultaneously</li>
+                    <li><strong>Real-time Indexing:</strong> Immediate availability of new info</li>
+                </ul>
+            </div>
+        </div>
+        <div id="isr-videos" class="tab-content">
+            <div class="video-section">
+                <h3><i class="fab fa-youtube"></i> Educational Videos</h3>
+                <div class="video-grid">
+                    <div class="video-card">
+                        <div class="video-thumbnail"><img src="https://img.youtube.com/vi/E9AgJnsEvG4/maxresdefault.jpg" alt="Information Retrieval"><div class="play-btn"><i class="fas fa-play"></i></div></div>
+                        <div class="video-info"><h4>Introduction to Information Retrieval</h4><p>Stanford University — Comprehensive overview of IR fundamentals</p><a href="https://www.youtube.com/watch?v=E9AgJnsEvG4" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch on YouTube</a></div>
+                    </div>
+                    <div class="video-card">
+                        <div class="video-thumbnail"><img src="https://img.youtube.com/vi/X7v0O8yiUuY/maxresdefault.jpg" alt="Database Management"><div class="play-btn"><i class="fas fa-play"></i></div></div>
+                        <div class="video-info"><h4>Database Management Systems Explained</h4><p>Learn how databases store and manage information</p><a href="https://www.youtube.com/watch?v=X7v0O8yiUuY" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch on YouTube</a></div>
+                    </div>
+                    <div class="video-card">
+                        <div class="video-thumbnail"><img src="https://i.pinimg.com/1200x/66/ae/0e/66ae0e06c9e08b95a2bc42e96a516b02.jpg" alt="Search Algorithms"><div class="play-btn"><i class="fas fa-play"></i></div></div>
+                        <div class="video-info"><h4>How Search Engines Work</h4><p>Understanding indexing, crawling, and ranking algorithms</p><a href="https://www.youtube.com/watch?v=dahryueQepE" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch on YouTube</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="isr-quiz" class="tab-content">
+            <div class="quiz-section" data-quiz="isr">
+                <h3><i class="fas fa-brain"></i> Test Your Knowledge</h3>
+                <p class="quiz-intro">Answer these questions to check your understanding of IS&amp;R concepts.</p>
+                <div class="quiz-progress"><div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:0%"></div></div><span class="quiz-progress-text">Question 1 of 5</span></div>
+                <div class="quiz-container">
+                    <div class="quiz-question active" data-question="1">
+                        <div class="question-number">Question 1</div>
+                        <div class="question-text">Which metric measures the proportion of retrieved documents that are actually relevant?</div>
+                        <div class="quiz-options">
+                            <label class="quiz-option"><input type="radio" name="isr-q1" value="a"><span class="option-marker">A</span><span class="option-text">Recall</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q1" value="b"><span class="option-marker">B</span><span class="option-text">Precision</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q1" value="c"><span class="option-marker">C</span><span class="option-text">Accuracy</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q1" value="d"><span class="option-marker">D</span><span class="option-text">Coverage</span></label>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                        <div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div>
+                    </div>
+                    <div class="quiz-question" data-question="2">
+                        <div class="question-number">Question 2</div>
+                        <div class="question-text">What type of database is best suited for handling unstructured data?</div>
+                        <div class="quiz-options">
+                            <label class="quiz-option"><input type="radio" name="isr-q2" value="a"><span class="option-marker">A</span><span class="option-text">Relational Database</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q2" value="b"><span class="option-marker">B</span><span class="option-text">NoSQL Database</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q2" value="c"><span class="option-marker">C</span><span class="option-text">Spreadsheet</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q2" value="d"><span class="option-marker">D</span><span class="option-text">Flat File</span></label>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                        <div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div>
+                    </div>
+                    <div class="quiz-question" data-question="3">
+                        <div class="question-number">Question 3</div>
+                        <div class="question-text">What is metadata?</div>
+                        <div class="quiz-options">
+                            <label class="quiz-option"><input type="radio" name="isr-q3" value="a"><span class="option-marker">A</span><span class="option-text">The main content of a document</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q3" value="b"><span class="option-marker">B</span><span class="option-text">Data about data — describes content, context, and structure</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q3" value="c"><span class="option-marker">C</span><span class="option-text">A type of database</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q3" value="d"><span class="option-marker">D</span><span class="option-text">A search algorithm</span></label>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                        <div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div>
+                    </div>
+                    <div class="quiz-question" data-question="4">
+                        <div class="question-number">Question 4</div>
+                        <div class="question-text">Which classification system is commonly used in public libraries?</div>
+                        <div class="quiz-options">
+                            <label class="quiz-option"><input type="radio" name="isr-q4" value="a"><span class="option-marker">A</span><span class="option-text">Dewey Decimal Classification</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q4" value="b"><span class="option-marker">B</span><span class="option-text">Binary Classification</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q4" value="c"><span class="option-marker">C</span><span class="option-text">Boolean Classification</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q4" value="d"><span class="option-marker">D</span><span class="option-text">Sequential Classification</span></label>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                        <div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div>
+                    </div>
+                    <div class="quiz-question" data-question="5">
+                        <div class="question-number">Question 5</div>
+                        <div class="question-text">What does Boolean search use to combine search terms?</div>
+                        <div class="quiz-options">
+                            <label class="quiz-option"><input type="radio" name="isr-q5" value="a"><span class="option-marker">A</span><span class="option-text">Mathematical formulas</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q5" value="b"><span class="option-marker">B</span><span class="option-text">Machine learning</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q5" value="c"><span class="option-marker">C</span><span class="option-text">AND, OR, NOT operators</span></label>
+                            <label class="quiz-option"><input type="radio" name="isr-q5" value="d"><span class="option-marker">D</span><span class="option-text">Natural language only</span></label>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                        <div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-primary finish-quiz" style="display:none;">See Results</button></div>
+                    </div>
+                    <div class="quiz-results"><div class="results-icon"><i class="fas fa-trophy"></i></div><div class="results-score">0/5</div><div class="results-message">Keep learning!</div><button class="btn btn-primary retry-quiz">Try Again</button></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ TYPES ══════════ -->
+    <section id="types" class="content-section">
+        <div class="content-header">
+            <div class="topic-hero-image">
+                <div class="topic-hero-placeholder" style="background:linear-gradient(135deg,#2563eb,#6366f1);display:flex;align-items:center;justify-content:center;font-size:4rem;color:rgba(255,255,255,0.25);height:100%;"><i class="fas fa-sitemap"></i></div>
+                <div class="topic-hero-overlay"><span class="topic-hero-label"></span></div>
+            </div>
+            <div class="breadcrumb"><a href="#" data-section="home">Home</a><i class="fas fa-chevron-right"></i><span>Types of Information Systems</span></div>
+            <div class="content-title"><div class="icon-wrapper" style="background:linear-gradient(135deg,#2563eb,#6366f1);"><i class="fas fa-sitemap"></i></div><h2>Types of Information Systems</h2></div>
+            <p class="content-description">Organizations rely on various types of information systems to support different levels of decision-making and operations.</p>
+        </div>
+        <div class="content-tabs">
+            <button class="content-tab active" data-tab="types-learn"><i class="fas fa-book-reader"></i> Learn</button>
+            <button class="content-tab" data-tab="types-videos"><i class="fas fa-video"></i> Videos</button>
+            <button class="content-tab" data-tab="types-quiz"><i class="fas fa-question-circle"></i> Quiz</button>
+        </div>
+        <div id="types-learn" class="tab-content active">
+            <div class="article-content">
+                <h3>Understanding Information Systems</h3>
+                <p>An <strong>information system (IS)</strong> is a set of interconnected components that collect, process, store, and distribute information to support decision-making, coordination, control, analysis, and visualization in an organization.</p>
+                <div class="highlight-box"><h4><i class="fas fa-layer-group"></i> The IS Pyramid</h4><p>Information systems are often visualized as a pyramid — operational systems at the base supporting daily transactions, strategic systems at the top supporting executive decisions.</p></div>
+                <h3>Transaction Processing Systems (TPS)</h3>
+                <p>TPS handle routine, day-to-day transactions essential to business operations.</p>
+                <ul><li><strong>Examples:</strong> Point-of-sale, payroll, order entry, reservations</li><li><strong>Characteristics:</strong> High volume, repetitive, structured data</li><li><strong>Users:</strong> Operational staff, frontline workers</li></ul>
+                <h3>Management Information Systems (MIS)</h3>
+                <p>MIS provide middle managers with reports and summaries based on TPS data.</p>
+                <ul><li><strong>Examples:</strong> Sales reports, inventory summaries, performance dashboards</li><li><strong>Characteristics:</strong> Periodic reports, summarized data, internal focus</li><li><strong>Users:</strong> Middle managers, department heads</li></ul>
+                <h3>Decision Support Systems (DSS)</h3>
+                <p>DSS help managers make non-routine decisions with interactive analysis tools.</p>
+                <ul><li><strong>Examples:</strong> Financial planning, what-if analysis tools</li><li><strong>Characteristics:</strong> Interactive, flexible, user-controlled</li><li><strong>Users:</strong> Analysts, managers, planners</li></ul>
+                <div class="key-terms">
+                    <dl class="term-card"><dt>What-If Analysis</dt><dd>Testing different scenarios to see potential outcomes of decisions.</dd></dl>
+                    <dl class="term-card"><dt>Data Mining</dt><dd>Discovering patterns and relationships in large datasets.</dd></dl>
+                </div>
+                <h3>Executive Information Systems (EIS)</h3>
+                <p>EIS provide top executives with easy access to strategic information for long-term planning.</p>
+                <ul><li><strong>Examples:</strong> KPI dashboards, competitive intelligence, strategic planning tools</li><li><strong>Characteristics:</strong> Highly visual, drill-down, external data, trend analysis</li><li><strong>Users:</strong> Senior executives, board members</li></ul>
+                <h3>Enterprise Resource Planning (ERP)</h3>
+                <div class="highlight-box success"><h4><i class="fas fa-puzzle-piece"></i> ERP Integration</h4><p>ERP connects finance, HR, manufacturing, supply chain, and sales — ensuring everyone works from the same data. Popular examples: SAP, Oracle, Microsoft Dynamics.</p></div>
+                <h3>Comparison Table</h3>
+                <table>
+                    <thead><tr><th>System Type</th><th>Primary Users</th><th>Purpose</th></tr></thead>
+                    <tbody>
+                        <tr><td>TPS</td><td>Operational Staff</td><td>Process daily transactions</td></tr>
+                        <tr><td>MIS</td><td>Middle Managers</td><td>Monitor and report performance</td></tr>
+                        <tr><td>DSS</td><td>Analysts &amp; Managers</td><td>Support complex decisions</td></tr>
+                        <tr><td>EIS</td><td>Executives</td><td>Strategic planning &amp; oversight</td></tr>
+                        <tr><td>ERP</td><td>All Levels</td><td>Integrate enterprise processes</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="types-videos" class="tab-content">
+            <div class="video-section">
+                <h3><i class="fab fa-youtube"></i> Educational Videos</h3>
+                <div class="video-grid">
+                    <div class="video-card"><div class="video-thumbnail"><img src="https://i.pinimg.com/736x/75/08/e3/7508e3990857d8ab2c6b83d89bf7eda1.jpg" alt="Types of IS"><div class="play-btn"><i class="fas fa-play"></i></div></div><div class="video-info"><h4>Types of Information Systems</h4><p>TPS, MIS, DSS, and EIS overview</p><a href="https://www.youtube.com/watch?v=Qujsd4vkqFI" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch on YouTube</a></div></div>
+                    <div class="video-card"><div class="video-thumbnail"><img src="https://i.pinimg.com/1200x/53/ed/af/53edaf15949bcf192d9b88600e9adb2f.jpg" alt="ERP"><div class="play-btn"><i class="fas fa-play"></i></div></div><div class="video-info"><h4>What is ERP?</h4><p>Understanding enterprise resource planning</p><a href="https://www.youtube.com/watch?v=6qys-562kp4" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch on YouTube</a></div></div>
+                    <div class="video-card"><div class="video-thumbnail"><img src="https://i.pinimg.com/736x/fd/96/73/fd9673236247cd100d7ae24ec06048f2.jpg" alt="MIS vs DSS"><div class="play-btn"><i class="fas fa-play"></i></div></div><div class="video-info"><h4>MIS vs DSS: Key Differences</h4><p>Comparing management and decision support systems</p><a href="https://www.youtube.com/watch?v=SweADrukFuk" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch on YouTube</a></div></div>
+                </div>
+            </div>
+        </div>
+        <div id="types-quiz" class="tab-content">
+            <div class="quiz-section" data-quiz="types">
+                <h3><i class="fas fa-brain"></i> Test Your Knowledge</h3>
+                <p class="quiz-intro">Answer these questions to check your understanding of different types of information systems.</p>
+                <div class="quiz-progress"><div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:0%"></div></div><span class="quiz-progress-text">Question 1 of 5</span></div>
+                <div class="quiz-container">
+                    <div class="quiz-question active" data-question="1"><div class="question-number">Question 1</div><div class="question-text">Which type of IS handles day-to-day transactions like sales and payroll?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="types-q1" value="a"><span class="option-marker">A</span><span class="option-text">Decision Support System (DSS)</span></label><label class="quiz-option"><input type="radio" name="types-q1" value="b"><span class="option-marker">B</span><span class="option-text">Transaction Processing System (TPS)</span></label><label class="quiz-option"><input type="radio" name="types-q1" value="c"><span class="option-marker">C</span><span class="option-text">Executive Information System (EIS)</span></label><label class="quiz-option"><input type="radio" name="types-q1" value="d"><span class="option-marker">D</span><span class="option-text">Knowledge Management System (KMS)</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="2"><div class="question-number">Question 2</div><div class="question-text">Who are the primary users of Executive Information Systems (EIS)?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="types-q2" value="a"><span class="option-marker">A</span><span class="option-text">Frontline employees</span></label><label class="quiz-option"><input type="radio" name="types-q2" value="b"><span class="option-marker">B</span><span class="option-text">Middle managers</span></label><label class="quiz-option"><input type="radio" name="types-q2" value="c"><span class="option-marker">C</span><span class="option-text">Senior executives and board members</span></label><label class="quiz-option"><input type="radio" name="types-q2" value="d"><span class="option-marker">D</span><span class="option-text">IT technicians</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="3"><div class="question-number">Question 3</div><div class="question-text">What is the main purpose of an ERP system?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="types-q3" value="a"><span class="option-marker">A</span><span class="option-text">Process customer complaints</span></label><label class="quiz-option"><input type="radio" name="types-q3" value="b"><span class="option-marker">B</span><span class="option-text">Integrate all core business processes into a unified system</span></label><label class="quiz-option"><input type="radio" name="types-q3" value="c"><span class="option-marker">C</span><span class="option-text">Create websites</span></label><label class="quiz-option"><input type="radio" name="types-q3" value="d"><span class="option-marker">D</span><span class="option-text">Manage social media</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="4"><div class="question-number">Question 4</div><div class="question-text">Which system supports what-if analysis for complex decisions?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="types-q4" value="a"><span class="option-marker">A</span><span class="option-text">Transaction Processing System</span></label><label class="quiz-option"><input type="radio" name="types-q4" value="b"><span class="option-marker">B</span><span class="option-text">Decision Support System</span></label><label class="quiz-option"><input type="radio" name="types-q4" value="c"><span class="option-marker">C</span><span class="option-text">Office Automation System</span></label><label class="quiz-option"><input type="radio" name="types-q4" value="d"><span class="option-marker">D</span><span class="option-text">Word Processor</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="5"><div class="question-number">Question 5</div><div class="question-text">MIS primarily serves which level of management?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="types-q5" value="a"><span class="option-marker">A</span><span class="option-text">Operational staff</span></label><label class="quiz-option"><input type="radio" name="types-q5" value="b"><span class="option-marker">B</span><span class="option-text">Middle managers</span></label><label class="quiz-option"><input type="radio" name="types-q5" value="c"><span class="option-marker">C</span><span class="option-text">Top executives only</span></label><label class="quiz-option"><input type="radio" name="types-q5" value="d"><span class="option-marker">D</span><span class="option-text">External customers</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-primary finish-quiz" style="display:none;">See Results</button></div></div>
+                    <div class="quiz-results"><div class="results-icon"><i class="fas fa-trophy"></i></div><div class="results-score">0/5</div><div class="results-message">Keep learning!</div><button class="btn btn-primary retry-quiz">Try Again</button></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ TOOLS ══════════ -->
+    <section id="tools" class="content-section">
+        <div class="content-header">
+            <div class="topic-hero-image">
+                <div class="topic-hero-placeholder" style="background:linear-gradient(135deg,#059669,#0d9488);display:flex;align-items:center;justify-content:center;font-size:4rem;color:rgba(255,255,255,0.25);height:100%;"><i class="fas fa-tools"></i></div>
+                <div class="topic-hero-overlay"><span class="topic-hero-label"></span></div>
+            </div>
+            <div class="breadcrumb"><a href="#" data-section="home">Home</a><i class="fas fa-chevron-right"></i><span>Tools &amp; Technologies</span></div>
+            <div class="content-title"><div class="icon-wrapper" style="background:linear-gradient(135deg,#059669,#0d9488);"><i class="fas fa-tools"></i></div><h2>Tools &amp; Technologies</h2></div>
+            <p class="content-description">Modern information management relies on a diverse ecosystem of tools — from databases and cloud platforms to analytics and AI.</p>
+        </div>
+        <div class="content-tabs">
+            <button class="content-tab active" data-tab="tools-learn"><i class="fas fa-book-reader"></i> Learn</button>
+            <button class="content-tab" data-tab="tools-videos"><i class="fas fa-video"></i> Videos</button>
+            <button class="content-tab" data-tab="tools-quiz"><i class="fas fa-question-circle"></i> Quiz</button>
+        </div>
+        <div id="tools-learn" class="tab-content active">
+            <div class="article-content">
+                <h3>The Technology Stack</h3>
+                <p>Information management technologies work in layers to collect, store, process, and deliver information to users.</p>
+                <h3>Database Technologies</h3>
+                <h4>Relational Databases (RDBMS)</h4>
+                <ul><li><strong>MySQL:</strong> Open-source, web applications</li><li><strong>PostgreSQL:</strong> Advanced open-source, strong compliance</li><li><strong>Oracle:</strong> Enterprise-grade features</li><li><strong>MS SQL Server:</strong> Microsoft ecosystem integration</li></ul>
+                <h4>NoSQL Databases</h4>
+                <div class="key-terms">
+                    <dl class="term-card"><dt>Document Stores</dt><dd>JSON-like documents (MongoDB, CouchDB)</dd></dl>
+                    <dl class="term-card"><dt>Key-Value Stores</dt><dd>Caching and sessions (Redis, DynamoDB)</dd></dl>
+                    <dl class="term-card"><dt>Column-Family</dt><dd>Big data analytics (Cassandra, HBase)</dd></dl>
+                    <dl class="term-card"><dt>Graph Databases</dt><dd>Relationship modeling (Neo4j)</dd></dl>
+                </div>
+                <h3>Cloud Computing Platforms</h3>
+                <div class="highlight-box"><h4><i class="fas fa-cloud"></i> Major Providers</h4><p><strong>AWS</strong>, <strong>Microsoft Azure</strong>, and <strong>Google Cloud</strong> offer storage, databases, analytics, machine learning, and more.</p></div>
+                <ul><li><strong>IaaS:</strong> Virtual machines, storage, networks</li><li><strong>PaaS:</strong> Development platforms, databases</li><li><strong>SaaS:</strong> Ready-to-use applications (Google Workspace, Salesforce)</li></ul>
+                <h3>Data Analytics Tools</h3>
+                <ul><li><strong>Tableau:</strong> Data visualization and dashboards</li><li><strong>Power BI:</strong> Microsoft analytics, integrated with Office</li><li><strong>Apache Hadoop:</strong> Distributed storage and processing</li><li><strong>Apache Spark:</strong> Fast unified analytics engine</li><li><strong>Apache Kafka:</strong> Real-time data streaming</li></ul>
+                <div class="highlight-box success"><h4><i class="fas fa-robot"></i> AI &amp; Machine Learning</h4><p>AI enhances information management through automated classification, intelligent search, predictive analytics, chatbots, and NLP.</p></div>
+            </div>
+        </div>
+        <div id="tools-videos" class="tab-content">
+            <div class="video-section">
+                <h3><i class="fab fa-youtube"></i> Educational Videos</h3>
+                <div class="video-grid">
+                    <div class="video-card"><div class="video-thumbnail"><img src="https://i.pinimg.com/736x/51/d5/48/51d548911242e61017adcdfbed429f59.jpg" alt="Cloud"><div class="play-btn"><i class="fas fa-play"></i></div></div><div class="video-info"><h4>Cloud Computing Explained</h4><p>IaaS, PaaS, and SaaS models</p><a href="https://www.youtube.com/watch?v=M988_fsOSWo" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch</a></div></div>
+                    <div class="video-card"><div class="video-thumbnail"><img src="https://i.pinimg.com/1200x/83/05/16/8305169142adf6ab021cb7499592b1fb.jpg" alt="SQL vs NoSQL"><div class="play-btn"><i class="fas fa-play"></i></div></div><div class="video-info"><h4>SQL vs NoSQL Databases</h4><p>When to use each type</p><a href="https://www.youtube.com/watch?v=Q5aTUc7c4jg" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch</a></div></div>
+                    <div class="video-card"><div class="video-thumbnail"><img src="https://img.youtube.com/vi/yZvFH7B6gKI/maxresdefault.jpg" alt="Big Data"><div class="play-btn"><i class="fas fa-play"></i></div></div><div class="video-info"><h4>Hadoop &amp; Spark</h4><p>Big data processing frameworks</p><a href="https://www.youtube.com/watch?v=yZvFH7B6gKI" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch</a></div></div>
+                </div>
+            </div>
+        </div>
+        <div id="tools-quiz" class="tab-content">
+            <div class="quiz-section" data-quiz="tools">
+                <h3><i class="fas fa-brain"></i> Test Your Knowledge</h3>
+                <p class="quiz-intro">Check your understanding of information management tools and technologies.</p>
+                <div class="quiz-progress"><div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:0%"></div></div><span class="quiz-progress-text">Question 1 of 5</span></div>
+                <div class="quiz-container">
+                    <div class="quiz-question active" data-question="1"><div class="question-number">Question 1</div><div class="question-text">Which cloud model provides ready-to-use applications like Google Workspace?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="tools-q1" value="a"><span class="option-marker">A</span><span class="option-text">IaaS</span></label><label class="quiz-option"><input type="radio" name="tools-q1" value="b"><span class="option-marker">B</span><span class="option-text">PaaS</span></label><label class="quiz-option"><input type="radio" name="tools-q1" value="c"><span class="option-marker">C</span><span class="option-text">SaaS</span></label><label class="quiz-option"><input type="radio" name="tools-q1" value="d"><span class="option-marker">D</span><span class="option-text">DaaS</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="2"><div class="question-number">Question 2</div><div class="question-text">MongoDB is an example of which type of database?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="tools-q2" value="a"><span class="option-marker">A</span><span class="option-text">Relational database</span></label><label class="quiz-option"><input type="radio" name="tools-q2" value="b"><span class="option-marker">B</span><span class="option-text">Document-based NoSQL database</span></label><label class="quiz-option"><input type="radio" name="tools-q2" value="c"><span class="option-marker">C</span><span class="option-text">Spreadsheet</span></label><label class="quiz-option"><input type="radio" name="tools-q2" value="d"><span class="option-marker">D</span><span class="option-text">Flat file database</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="3"><div class="question-number">Question 3</div><div class="question-text">What does ETL stand for in data management?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="tools-q3" value="a"><span class="option-marker">A</span><span class="option-text">Evaluate, Test, Learn</span></label><label class="quiz-option"><input type="radio" name="tools-q3" value="b"><span class="option-marker">B</span><span class="option-text">Extract, Transform, Load</span></label><label class="quiz-option"><input type="radio" name="tools-q3" value="c"><span class="option-marker">C</span><span class="option-text">Enterprise Technology Layer</span></label><label class="quiz-option"><input type="radio" name="tools-q3" value="d"><span class="option-marker">D</span><span class="option-text">External Transfer Link</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="4"><div class="question-number">Question 4</div><div class="question-text">Which tool is commonly used for data visualization and BI?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="tools-q4" value="a"><span class="option-marker">A</span><span class="option-text">Apache Kafka</span></label><label class="quiz-option"><input type="radio" name="tools-q4" value="b"><span class="option-marker">B</span><span class="option-text">Tableau</span></label><label class="quiz-option"><input type="radio" name="tools-q4" value="c"><span class="option-marker">C</span><span class="option-text">Redis</span></label><label class="quiz-option"><input type="radio" name="tools-q4" value="d"><span class="option-marker">D</span><span class="option-text">WordPress</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="5"><div class="question-number">Question 5</div><div class="question-text">What is Apache Spark primarily used for?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="tools-q5" value="a"><span class="option-marker">A</span><span class="option-text">Email management</span></label><label class="quiz-option"><input type="radio" name="tools-q5" value="b"><span class="option-marker">B</span><span class="option-text">Fast, large-scale data processing and analytics</span></label><label class="quiz-option"><input type="radio" name="tools-q5" value="c"><span class="option-marker">C</span><span class="option-text">Website hosting</span></label><label class="quiz-option"><input type="radio" name="tools-q5" value="d"><span class="option-marker">D</span><span class="option-text">Video editing</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-primary finish-quiz" style="display:none;">See Results</button></div></div>
+                    <div class="quiz-results"><div class="results-icon"><i class="fas fa-trophy"></i></div><div class="results-score">0/5</div><div class="results-message">Keep learning!</div><button class="btn btn-primary retry-quiz">Try Again</button></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ QUALITY ══════════ -->
+    <section id="quality" class="content-section">
+        <div class="content-header">
+            <div class="topic-hero-image">
+                <div class="topic-hero-placeholder" style="background:linear-gradient(135deg,#d97706,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:4rem;color:rgba(255,255,255,0.25);height:100%;"><i class="fas fa-chart-line"></i></div>
+                <div class="topic-hero-overlay"><span class="topic-hero-label"></span></div>
+            </div>
+            <div class="breadcrumb"><a href="#" data-section="home">Home</a><i class="fas fa-chevron-right"></i><span>Data Quality Issues</span></div>
+            <div class="content-title"><div class="icon-wrapper" style="background:linear-gradient(135deg,#d97706,#f59e0b);"><i class="fas fa-chart-line"></i></div><h2>Data Quality Issues</h2></div>
+            <p class="content-description">Poor data quality costs organizations billions annually. Learn the dimensions, common issues, and strategies for maintaining high-quality data.</p>
+        </div>
+        <div class="content-tabs">
+            <button class="content-tab active" data-tab="quality-learn"><i class="fas fa-book-reader"></i> Learn</button>
+            <button class="content-tab" data-tab="quality-videos"><i class="fas fa-video"></i> Videos</button>
+            <button class="content-tab" data-tab="quality-quiz"><i class="fas fa-question-circle"></i> Quiz</button>
+        </div>
+        <div id="quality-learn" class="tab-content active">
+            <div class="article-content">
+                <h3>What is Data Quality?</h3>
+                <p><strong>Data quality</strong> refers to the condition of data based on accuracy, completeness, consistency, reliability, and timeliness. High-quality data is fit for its intended use in operations, decision-making, and planning.</p>
+                <div class="highlight-box warning"><h4><i class="fas fa-exclamation-triangle"></i> The Cost</h4><p>Organizations lose an estimated 15–25% of revenue due to poor data quality — leading to incorrect decisions, compliance violations, and damaged relationships.</p></div>
+                <h3>Dimensions of Data Quality</h3>
+                <div class="key-terms">
+                    <dl class="term-card"><dt>Accuracy</dt><dd>Correctly represents real-world entities.</dd></dl>
+                    <dl class="term-card"><dt>Completeness</dt><dd>All required values are present.</dd></dl>
+                    <dl class="term-card"><dt>Consistency</dt><dd>Uniform across datasets and systems.</dd></dl>
+                    <dl class="term-card"><dt>Timeliness</dt><dd>Available when needed, reflects current state.</dd></dl>
+                    <dl class="term-card"><dt>Validity</dt><dd>Conforms to defined formats and rules.</dd></dl>
+                    <dl class="term-card"><dt>Uniqueness</dt><dd>No unwanted duplicate records.</dd></dl>
+                </div>
+                <h3>Common Data Quality Issues</h3>
+                <h4>1. Inaccurate Data</h4><ul><li>Typos and data entry errors</li><li>Outdated information</li><li>Incorrect calculations or transformations</li></ul>
+                <h4>2. Incomplete Data</h4><ul><li>Missing required fields</li><li>Partial records or truncated values</li><li>Undocumented null values</li></ul>
+                <h4>3. Duplicate Data</h4><ul><li>Same entity entered multiple times</li><li>Inconsistent identifiers across systems</li></ul>
+                <h3>The Four Vs of Big Data Quality</h3>
+                <ul><li><strong>Volume:</strong> Massive amounts make errors harder to detect</li><li><strong>Velocity:</strong> Rapid flow limits time for quality checks</li><li><strong>Variety:</strong> Diverse types complicate standardization</li><li><strong>Veracity:</strong> Uncertainty about reliability and trustworthiness</li></ul>
+                <div class="highlight-box success"><h4><i class="fas fa-check-circle"></i> Best Practice</h4><p>Implement data quality at the source — preventing errors is far more effective than correcting them later.</p></div>
+            </div>
+        </div>
+        <div id="quality-videos" class="tab-content">
+            <div class="video-section">
+                <h3><i class="fab fa-youtube"></i> Educational Videos</h3>
+                <div class="video-grid">
+                    <div class="video-card"><div class="video-thumbnail"><img src="https://i.pinimg.com/1200x/11/8d/48/118d48909bba9064aa8a52361fe99016.jpg" alt="Data Quality"><div class="play-btn"><i class="fas fa-play"></i></div></div><div class="video-info"><h4>Data Quality Fundamentals</h4><p>Dimensions and importance of data quality</p><a href="https://www.youtube.com/watch?v=5HcDJ8e9NwY" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch</a></div></div>
+                    <div class="video-card"><div class="video-thumbnail"><img src="https://i.pinimg.com/736x/22/c5/dc/22c5dca8a9a4fd542b89ddb752b7d3df.jpg" alt="Data Cleansing"><div class="play-btn"><i class="fas fa-play"></i></div></div><div class="video-info"><h4>Data Cleansing Techniques</h4><p>How to clean and standardize messy data</p><a href="https://www.youtube.com/watch?v=J83qfwt-beQ" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch</a></div></div>
+                    <div class="video-card"><div class="video-thumbnail"><img src="https://i.pinimg.com/1200x/0a/44/a5/0a44a5bad080a2f6d172311c8b617a35.jpg" alt="MDM"><div class="play-btn"><i class="fas fa-play"></i></div></div><div class="video-info"><h4>Master Data Management</h4><p>Creating a single source of truth</p><a href="https://www.youtube.com/watch?v=l83bkKJh1wM" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch</a></div></div>
+                </div>
+            </div>
+        </div>
+        <div id="quality-quiz" class="tab-content">
+            <div class="quiz-section" data-quiz="quality">
+                <h3><i class="fas fa-brain"></i> Test Your Knowledge</h3>
+                <p class="quiz-intro">Check your understanding of data quality concepts.</p>
+                <div class="quiz-progress"><div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:0%"></div></div><span class="quiz-progress-text">Question 1 of 5</span></div>
+                <div class="quiz-container">
+                    <div class="quiz-question active" data-question="1"><div class="question-number">Question 1</div><div class="question-text">Which dimension refers to data being uniform across different systems?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="quality-q1" value="a"><span class="option-marker">A</span><span class="option-text">Accuracy</span></label><label class="quiz-option"><input type="radio" name="quality-q1" value="b"><span class="option-marker">B</span><span class="option-text">Completeness</span></label><label class="quiz-option"><input type="radio" name="quality-q1" value="c"><span class="option-marker">C</span><span class="option-text">Consistency</span></label><label class="quiz-option"><input type="radio" name="quality-q1" value="d"><span class="option-marker">D</span><span class="option-text">Timeliness</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="2"><div class="question-number">Question 2</div><div class="question-text">Which of the "Four Vs" relates to uncertainty about data reliability?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="quality-q2" value="a"><span class="option-marker">A</span><span class="option-text">Volume</span></label><label class="quiz-option"><input type="radio" name="quality-q2" value="b"><span class="option-marker">B</span><span class="option-text">Velocity</span></label><label class="quiz-option"><input type="radio" name="quality-q2" value="c"><span class="option-marker">C</span><span class="option-text">Variety</span></label><label class="quiz-option"><input type="radio" name="quality-q2" value="d"><span class="option-marker">D</span><span class="option-text">Veracity</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="3"><div class="question-number">Question 3</div><div class="question-text">What is the most effective approach to data quality management?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="quality-q3" value="a"><span class="option-marker">A</span><span class="option-text">Fix errors after discovery</span></label><label class="quiz-option"><input type="radio" name="quality-q3" value="b"><span class="option-marker">B</span><span class="option-text">Prevent errors at the source</span></label><label class="quiz-option"><input type="radio" name="quality-q3" value="c"><span class="option-marker">C</span><span class="option-text">Delete all questionable data</span></label><label class="quiz-option"><input type="radio" name="quality-q3" value="d"><span class="option-marker">D</span><span class="option-text">Ignore minor quality issues</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="4"><div class="question-number">Question 4</div><div class="question-text">What is deduplication?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="quality-q4" value="a"><span class="option-marker">A</span><span class="option-text">Creating backup copies</span></label><label class="quiz-option"><input type="radio" name="quality-q4" value="b"><span class="option-marker">B</span><span class="option-text">Removing duplicate records from a dataset</span></label><label class="quiz-option"><input type="radio" name="quality-q4" value="c"><span class="option-marker">C</span><span class="option-text">Encrypting sensitive data</span></label><label class="quiz-option"><input type="radio" name="quality-q4" value="d"><span class="option-marker">D</span><span class="option-text">Compressing data for storage</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="5"><div class="question-number">Question 5</div><div class="question-text">Master Data Management (MDM) helps organizations create:</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="quality-q5" value="a"><span class="option-marker">A</span><span class="option-text">Multiple versions for different departments</span></label><label class="quiz-option"><input type="radio" name="quality-q5" value="b"><span class="option-marker">B</span><span class="option-text">A single, authoritative source of truth</span></label><label class="quiz-option"><input type="radio" name="quality-q5" value="c"><span class="option-marker">C</span><span class="option-text">Temporary data for testing</span></label><label class="quiz-option"><input type="radio" name="quality-q5" value="d"><span class="option-marker">D</span><span class="option-text">Historical archives only</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-primary finish-quiz" style="display:none;">See Results</button></div></div>
+                    <div class="quiz-results"><div class="results-icon"><i class="fas fa-trophy"></i></div><div class="results-score">0/5</div><div class="results-message">Keep learning!</div><button class="btn btn-primary retry-quiz">Try Again</button></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ GOVERNANCE ══════════ -->
+    <section id="governance" class="content-section">
+        <div class="content-header">
+            <div class="topic-hero-image">
+                <div class="topic-hero-placeholder" style="background:linear-gradient(135deg,#dc2626,#e05252);display:flex;align-items:center;justify-content:center;font-size:4rem;color:rgba(255,255,255,0.25);height:100%;"><i class="fas fa-shield-alt"></i></div>
+                <div class="topic-hero-overlay"><span class="topic-hero-label"></span></div>
+            </div>
+            <div class="breadcrumb"><a href="#" data-section="home">Home</a><i class="fas fa-chevron-right"></i><span>Information Governance</span></div>
+            <div class="content-title"><div class="icon-wrapper" style="background:linear-gradient(135deg,#dc2626,#e05252);"><i class="fas fa-shield-alt"></i></div><h2>Information Governance</h2></div>
+            <p class="content-description">Establishes the policies, procedures, and standards for managing information assets — ensuring data is secure, compliant, and used effectively.</p>
+        </div>
+        <div class="content-tabs">
+            <button class="content-tab active" data-tab="governance-learn"><i class="fas fa-book-reader"></i> Learn</button>
+            <button class="content-tab" data-tab="governance-videos"><i class="fas fa-video"></i> Videos</button>
+            <button class="content-tab" data-tab="governance-quiz"><i class="fas fa-question-circle"></i> Quiz</button>
+        </div>
+        <div id="governance-learn" class="tab-content active">
+            <div class="article-content">
+                <h3>What is Information Governance?</h3>
+                <p><strong>Information governance (IG)</strong> is the strategic framework of policies, processes, roles, standards, and metrics that ensures the effective and efficient use of information to achieve organizational goals.</p>
+                <div class="highlight-box"><h4><i class="fas fa-balance-scale"></i> The Balance</h4><p>IG balances maximizing information value while minimizing risks and costs — providing guardrails that enable, rather than restrict, information use.</p></div>
+                <h3>Key Components</h3>
+                <h4>1. Data Governance</h4>
+                <ul><li>Data ownership and stewardship</li><li>Data quality standards and metrics</li><li>Data definitions and business glossaries</li><li>Data lifecycle management</li></ul>
+                <h4>2. Information Security</h4>
+                <ul><li>Access controls and authentication</li><li>Encryption and data masking</li><li>Security monitoring and incident response</li><li>Frameworks: NIST, ISO 27001</li></ul>
+                <h4>3. Privacy &amp; Compliance</h4>
+                <div class="key-terms">
+                    <dl class="term-card"><dt>GDPR</dt><dd>EU General Data Protection Regulation — comprehensive privacy law</dd></dl>
+                    <dl class="term-card"><dt>HIPAA</dt><dd>US Healthcare data protection act</dd></dl>
+                    <dl class="term-card"><dt>SOX</dt><dd>Sarbanes-Oxley — financial reporting and records</dd></dl>
+                    <dl class="term-card"><dt>CCPA</dt><dd>California Consumer Privacy Act</dd></dl>
+                </div>
+                <h3>Governance Roles</h3>
+                <ul><li><strong>Chief Data Officer (CDO):</strong> Executive responsibility for data strategy</li><li><strong>Data Steward:</strong> Domain expert for data quality</li><li><strong>Data Owner:</strong> Business accountability for data assets</li><li><strong>Data Custodian:</strong> Technical storage and security responsibility</li></ul>
+                <div class="highlight-box success"><h4><i class="fas fa-clipboard-list"></i> DAMA-DMBOK</h4><p>The Data Management Body of Knowledge provides comprehensive guidelines across 11 areas including governance, architecture, quality, and security.</p></div>
+                <div class="highlight-box warning"><h4><i class="fas fa-exclamation-circle"></i> Common Pitfalls</h4><p>Governance fails when it becomes bureaucratic overhead. Success requires executive sponsorship, clear benefits, and incremental implementation.</p></div>
+            </div>
+        </div>
+        <div id="governance-videos" class="tab-content">
+            <div class="video-section">
+                <h3><i class="fab fa-youtube"></i> Educational Videos</h3>
+                <div class="video-grid">
+                    <div class="video-card"><div class="video-thumbnail"><img src="https://i.pinimg.com/736x/37/42/9c/37429cbcab314ca5d844ef3d9148c94d.jpg" alt="Data Governance"><div class="play-btn"><i class="fas fa-play"></i></div></div><div class="video-info"><h4>Data Governance Explained</h4><p>Introduction to governance concepts and practices</p><a href="https://www.youtube.com/watch?v=kiYPjNj9AmU" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch</a></div></div>
+                    <div class="video-card"><div class="video-thumbnail"><img src="https://i.pinimg.com/736x/7b/28/ba/7b28baeeeec64f0f461bf1392cccf457.jpg" alt="GDPR"><div class="play-btn"><i class="fas fa-play"></i></div></div><div class="video-info"><h4>GDPR Compliance Explained</h4><p>Understanding EU data protection regulation</p><a href="https://www.youtube.com/watch?v=kLFFnAONHvU" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch</a></div></div>
+                    <div class="video-card"><div class="video-thumbnail"><img src="https://img.youtube.com/vi/inWWhr5tnEA/maxresdefault.jpg" alt="InfoSec"><div class="play-btn"><i class="fas fa-play"></i></div></div><div class="video-info"><h4>Information Security Fundamentals</h4><p>Core concepts in protecting organizational information</p><a href="https://www.youtube.com/watch?v=bNhIfHhrklo&list=PLSQJplc69RZP1UIOkfGHaT990onj5s0ew" target="_blank" class="video-link"><i class="fas fa-external-link-alt"></i> Watch</a></div></div>
+                </div>
+            </div>
+        </div>
+        <div id="governance-quiz" class="tab-content">
+            <div class="quiz-section" data-quiz="governance">
+                <h3><i class="fas fa-brain"></i> Test Your Knowledge</h3>
+                <p class="quiz-intro">Check your understanding of information governance concepts.</p>
+                <div class="quiz-progress"><div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:0%"></div></div><span class="quiz-progress-text">Question 1 of 5</span></div>
+                <div class="quiz-container">
+                    <div class="quiz-question active" data-question="1"><div class="question-number">Question 1</div><div class="question-text">Which regulation focuses on healthcare data protection in the US?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="governance-q1" value="a"><span class="option-marker">A</span><span class="option-text">GDPR</span></label><label class="quiz-option"><input type="radio" name="governance-q1" value="b"><span class="option-marker">B</span><span class="option-text">HIPAA</span></label><label class="quiz-option"><input type="radio" name="governance-q1" value="c"><span class="option-marker">C</span><span class="option-text">SOX</span></label><label class="quiz-option"><input type="radio" name="governance-q1" value="d"><span class="option-marker">D</span><span class="option-text">CCPA</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="2"><div class="question-number">Question 2</div><div class="question-text">Who has executive responsibility for data strategy and governance?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="governance-q2" value="a"><span class="option-marker">A</span><span class="option-text">Data Steward</span></label><label class="quiz-option"><input type="radio" name="governance-q2" value="b"><span class="option-marker">B</span><span class="option-text">Data Custodian</span></label><label class="quiz-option"><input type="radio" name="governance-q2" value="c"><span class="option-marker">C</span><span class="option-text">Chief Data Officer (CDO)</span></label><label class="quiz-option"><input type="radio" name="governance-q2" value="d"><span class="option-marker">D</span><span class="option-text">Database Administrator</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="3"><div class="question-number">Question 3</div><div class="question-text">DAMA-DMBOK is:</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="governance-q3" value="a"><span class="option-marker">A</span><span class="option-text">A type of database</span></label><label class="quiz-option"><input type="radio" name="governance-q3" value="b"><span class="option-marker">B</span><span class="option-text">A data governance framework and body of knowledge</span></label><label class="quiz-option"><input type="radio" name="governance-q3" value="c"><span class="option-marker">C</span><span class="option-text">A security software tool</span></label><label class="quiz-option"><input type="radio" name="governance-q3" value="d"><span class="option-marker">D</span><span class="option-text">A government agency</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="4"><div class="question-number">Question 4</div><div class="question-text">What is the purpose of records retention schedules?</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="governance-q4" value="a"><span class="option-marker">A</span><span class="option-text">Keep all records forever</span></label><label class="quiz-option"><input type="radio" name="governance-q4" value="b"><span class="option-marker">B</span><span class="option-text">Define how long records must be kept and when to dispose of them</span></label><label class="quiz-option"><input type="radio" name="governance-q4" value="c"><span class="option-marker">C</span><span class="option-text">Delete all records immediately</span></label><label class="quiz-option"><input type="radio" name="governance-q4" value="d"><span class="option-marker">D</span><span class="option-text">Create backup copies</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-secondary next-question" disabled>Next Question</button></div></div>
+                    <div class="quiz-question" data-question="5"><div class="question-number">Question 5</div><div class="question-text">A Data Steward's primary responsibility is:</div><div class="quiz-options"><label class="quiz-option"><input type="radio" name="governance-q5" value="a"><span class="option-marker">A</span><span class="option-text">Managing database servers</span></label><label class="quiz-option"><input type="radio" name="governance-q5" value="b"><span class="option-marker">B</span><span class="option-text">Ensuring data quality in their domain as a subject matter expert</span></label><label class="quiz-option"><input type="radio" name="governance-q5" value="c"><span class="option-marker">C</span><span class="option-text">Writing software code</span></label><label class="quiz-option"><input type="radio" name="governance-q5" value="d"><span class="option-marker">D</span><span class="option-text">Training new employees</span></label></div><div class="quiz-feedback"></div><div class="quiz-actions"><button class="btn btn-primary check-answer">Check Answer</button><button class="btn btn-primary finish-quiz" style="display:none;">See Results</button></div></div>
+                    <div class="quiz-results"><div class="results-icon"><i class="fas fa-trophy"></i></div><div class="results-score">0/5</div><div class="results-message">Keep learning!</div><button class="btn btn-primary retry-quiz">Try Again</button></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ REFLECTION ══════════ -->
+    <section id="reflection" class="content-section">
+
+        <!-- Hero Banner -->
+        <div class="reflection-hero">
+            <div class="reflection-hero-content">
+                <div class="reflection-badge"><i class="fas fa-pen-fancy"></i> Reflection</div>
+                <h2>Our Journey Through Information Management</h2>
+                <p>A personal account of insights gained, challenges overcome, and lessons learned while studying the principles of information management — from storage and retrieval to governance and data quality.</p>
+            </div>
+        </div>
+
+        <!-- Three pillars of reflection -->
+        <div class="reflection-grid">
+            <div class="reflection-card">
+                <div class="reflection-card-icon"><i class="fas fa-lightbulb"></i></div>
+                <h3>What We Discovered</h3>
+                <p>Before this subject, we viewed information as simply "data." Studying IS&R and information governance revealed that information is a strategic asset requiring deliberate management. The realization that poor data quality costs organizations billions annually was particularly striking — it made the subject feel immediately real and consequential.</p>
+            </div>
+            <div class="reflection-card">
+                <div class="reflection-card-icon"><i class="fas fa-mountain"></i></div>
+                <h3>Challenges We Faced</h3>
+                <p>The most difficult concept for me was distinguishing between the different types of information systems — particularly understanding when a system crosses from being an MIS into a DSS. Working through real-world examples and the comparison table helped me finally internalize the distinction between structured reporting and interactive decision support.</p>
+            </div>
+            <div class="reflection-card">
+                <div class="reflection-card-icon"><i class="fas fa-arrow-trend-up"></i></div>
+                <h3>How We Grew</h3>
+                <p>This subject fundamentally changed how I think about data in everyday life — from noticing metadata on files to understanding why websites ask for cookie preferences. I now appreciate the immense effort organizations invest in maintaining data integrity and compliance, work that was previously invisible to me.</p>
+            </div>
+        </div>
+
+        <!-- Inspirational quote -->
+        <div class="reflection-quote-block">
+            <div class="quote-icon">"</div>
+            <blockquote>Information is the oil of the 21st century, and analytics is the combustion engine.</blockquote>
+            <div class="quote-author">— Peter Sondergaard, Gartner Research</div>
+        </div>
+
+        <!-- Learning journey timeline -->
+        <div class="reflection-timeline">
+            <h3><i class="fas fa-route"></i> Our Learning Journey</h3>
+            <div class="timeline-item">
+                <div class="timeline-dot"><i class="fas fa-database"></i></div>
+                <div class="timeline-content">
+                    <span class="timeline-tag">Topic 1 — IS&amp;R</span>
+                    <h4>Foundations of Storage &amp; Retrieval</h4>
+                    <p>Starting with information storage and retrieval gave us a strong technical foundation. Understanding the difference between relational and NoSQL databases, and learning how precision and recall balance each other in search systems, was eye-opening. We had never considered how much engineering goes into something as simple as a search bar.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"><i class="fas fa-sitemap"></i></div>
+                <div class="timeline-content">
+                    <span class="timeline-tag">Topic 2 — Types of IS</span>
+                    <h4>Understanding Organizational Systems</h4>
+                    <p>The pyramid model of information systems — from TPS at the base up to EIS at the top — gave me a mental model I use constantly now. Seeing how data flows upward through an organization, becoming progressively more summarized and strategic, made organizational decision-making much clearer to me.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"><i class="fas fa-tools"></i></div>
+                <div class="timeline-content">
+                    <span class="timeline-tag">Topic 3 — Tools &amp; Tech</span>
+                    <h4>Navigating the Technology Landscape</h4>
+                    <p>This topic was both exciting and overwhelming. The breadth of tools — from cloud platforms like AWS to analytics engines like Apache Spark — illustrated just how specialized modern information management has become. I now have a vocabulary for conversations about technology that I previously lacked.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"><i class="fas fa-chart-line"></i></div>
+                <div class="timeline-content">
+                    <span class="timeline-tag">Topic 4 — Data Quality</span>
+                    <h4>Appreciating the Value of Clean Data</h4>
+                    <p>Data quality was the topic that resonated most personally. Reflecting on times I have received wrong information from a service or seen errors in reports, We now understand the root causes. The six dimensions of data quality — accuracy, completeness, consistency, timeliness, validity, and uniqueness — have become a personal checklist.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"><i class="fas fa-shield-alt"></i></div>
+                <div class="timeline-content">
+                    <span class="timeline-tag">Topic 5 — Governance</span>
+                    <h4>Seeing Information as a Responsibility</h4>
+                    <p>Information governance brought everything together by emphasizing the human and ethical dimensions of data management. Learning about GDPR, HIPAA, and roles like the Chief Data Officer helped me see information management not just as a technical discipline but as a social and organizational responsibility.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key takeaways -->
+        <div class="reflection-takeaways">
+            <h3><i class="fas fa-star"></i> Key Takeaways from This Subject</h3>
+            <div class="takeaway-list">
+                <div class="takeaway-item">
+                    <div class="takeaway-number">1</div>
+                    <div class="takeaway-text">
+                        <strong>Information is a strategic asset, not just a byproduct.</strong>
+                        <span>Every organization generates data, but only those that actively manage it can extract its full value. This mindset shift was the most important thing I took from this subject.</span>
+                    </div>
+                </div>
+                <div class="takeaway-item">
+                    <div class="takeaway-number">2</div>
+                    <div class="takeaway-text">
+                        <strong>Prevention beats correction in data quality.</strong>
+                        <span>It is far cheaper and more effective to build quality into data collection processes than to clean up poor data afterward. This principle applies well beyond information management.</span>
+                    </div>
+                </div>
+                <div class="takeaway-item">
+                    <div class="takeaway-number">3</div>
+                    <div class="takeaway-text">
+                        <strong>The right system depends on the decision being made.</strong>
+                        <span>TPS, MIS, DSS, and EIS each serve distinct purposes at different organizational levels. Matching the tool to the need is a core competency of effective information management.</span>
+                    </div>
+                </div>
+                <div class="takeaway-item">
+                    <div class="takeaway-number">4</div>
+                    <div class="takeaway-text">
+                        <strong>Governance is about enabling, not just restricting.</strong>
+                        <span>Well-designed information governance policies create trust in data and free teams to act decisively, rather than slowing down operations with bureaucracy.</span>
+                    </div>
+                </div>
+                <div class="takeaway-item">
+                    <div class="takeaway-number">5</div>
+                    <div class="takeaway-text">
+                        <strong>Technology is a means, not an end.</strong>
+                        <span>The most sophisticated database or AI tool is only valuable if it serves a clearly understood information need. People and processes must always drive technology choices — not the other way around.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Closing statement -->
+        <div class="reflection-closing">
+            <h3>Looking Forward</h3>
+            <p>Studying Information Management has equipped me with both a conceptual framework and a practical vocabulary for navigating an increasingly data-driven world. Whether I pursue a career in technology, business, or any other field, the principles I have learned here — about how information is stored, governed, and used responsibly — will remain relevant and valuable. I look forward to applying these lessons in real-world contexts.</p>
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>Digital Library</h4>
+            <p style="font-size:0.875rem;line-height:1.7;color:var(--gray-400);">A comprehensive learning resource for Information Management — storage, systems, tools, quality, and governance.</p>
+        </div>
+        <div class="footer-section">
+            <h4>Topics</h4>
+            <ul>
+                <li><a href="#" data-section="isr">Information Storage &amp; Retrieval</a></li>
+                <li><a href="#" data-section="types">Types of Information Systems</a></li>
+                <li><a href="#" data-section="tools">Tools &amp; Technologies</a></li>
+                <li><a href="#" data-section="quality">Data Quality Issues</a></li>
+                <li><a href="#" data-section="governance">Information Governance</a></li>
+                <li><a href="#" data-section="reflection">My Reflection</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>External Resources</h4>
+            <ul>
+                <li><a href="https://www.dama.org/" target="_blank">DAMA International</a></li>
+                <li><a href="https://lis.academy/information-processing-retrieval" target="_blank">LIS Academy</a></li>
+                <li><a href="https://openstax.org/books/foundations-information-systems/" target="_blank">OpenStax IS</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2025 Digital Library — Information Management. Educational purposes only.</p>
+    </div>
+</footer>
+
+<button class="scroll-top" id="scrollTop"><i class="fas fa-chevron-up"></i></button>
+
+<script>
+    const answerKeys = {
+        isr:        { 1:'b', 2:'b', 3:'b', 4:'a', 5:'c' },
+        types:      { 1:'b', 2:'c', 3:'b', 4:'b', 5:'b' },
+        tools:      { 1:'c', 2:'b', 3:'b', 4:'b', 5:'b' },
+        quality:    { 1:'c', 2:'d', 3:'b', 4:'b', 5:'b' },
+        governance: { 1:'b', 2:'c', 3:'b', 4:'b', 5:'b' }
+    };
+
+    const quizProgress = {
+        isr:{completed:false,score:0}, types:{completed:false,score:0},
+        tools:{completed:false,score:0}, quality:{completed:false,score:0},
+        governance:{completed:false,score:0}
+    };
+
+    function showSection(sectionId) {
+        document.querySelectorAll('.nav-links a').forEach(a => {
+            a.classList.toggle('active', a.dataset.section === sectionId);
+        });
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('[data-section]').forEach(el => {
+        el.addEventListener('click', e => { e.preventDefault(); showSection(el.dataset.section); });
+    });
+
+    document.querySelectorAll('.topic-card[data-topic]').forEach(card => {
+        card.addEventListener('click', () => showSection(card.dataset.topic));
+    });
+
+    document.querySelectorAll('.content-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const parent = tab.closest('.content-section');
+            parent.querySelectorAll('.content-tab').forEach(t => t.classList.remove('active'));
+            parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            tab.classList.add('active');
+            parent.querySelector('#' + tab.dataset.tab).classList.add('active');
+        });
+    });
+
+    document.querySelectorAll('.quiz-section').forEach(qs => {
+        const quizId   = qs.dataset.quiz;
+        const progFill = qs.querySelector('.quiz-progress-fill');
+        const progText = qs.querySelector('.quiz-progress-text');
+        const results  = qs.querySelector('.quiz-results');
+        let current = 1, score = 0;
+
+        qs.querySelectorAll('.quiz-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                const qDiv = opt.closest('.quiz-question');
+                if (qDiv.classList.contains('answered')) return;
+                qDiv.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                opt.querySelector('input').checked = true;
+            });
+        });
+
+        qs.querySelectorAll('.check-answer').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const qDiv    = btn.closest('.quiz-question');
+                const qNum    = parseInt(qDiv.dataset.question);
+                const sel     = qDiv.querySelector('.quiz-option.selected');
+                const fb      = qDiv.querySelector('.quiz-feedback');
+                const nextBtn = qDiv.querySelector('.next-question');
+                const finBtn  = qDiv.querySelector('.finish-quiz');
+
+                if (!sel) { fb.textContent = 'Please select an answer.'; fb.className = 'quiz-feedback show incorrect'; return; }
+
+                qDiv.classList.add('answered');
+                const correct = answerKeys[quizId][qNum];
+                const chosen  = sel.querySelector('input').value;
+
+                qDiv.querySelectorAll('.quiz-option').forEach(o => {
+                    const v = o.querySelector('input').value;
+                    if (v === correct) o.classList.add('correct');
+                    else if (o.classList.contains('selected')) o.classList.add('incorrect');
+                });
+
+                if (chosen === correct) {
+                    score++;
+                    fb.innerHTML = '<i class="fas fa-check-circle"></i> Correct! Well done.';
+                    fb.className = 'quiz-feedback show correct';
+                } else {
+                    fb.innerHTML = '<i class="fas fa-times-circle"></i> Incorrect. The correct answer is highlighted.';
+                    fb.className = 'quiz-feedback show incorrect';
+                }
+
+                btn.style.display = 'none';
+                if (qNum < 5) { if (nextBtn) { nextBtn.disabled = false; } }
+                else { if (finBtn) finBtn.style.display = 'inline-flex'; }
+            });
+        });
+
+        qs.querySelectorAll('.next-question').forEach(btn => {
+            btn.addEventListener('click', () => {
+                current++;
+                qs.querySelectorAll('.quiz-question').forEach(q => q.classList.remove('active'));
+                qs.querySelector('[data-question="' + current + '"]').classList.add('active');
+                progFill.style.width = ((current - 1) / 5 * 100) + '%';
+                progText.textContent = 'Question ' + current + ' of 5';
+            });
+        });
+
+        qs.querySelectorAll('.finish-quiz').forEach(btn => {
+            btn.addEventListener('click', () => {
+                qs.querySelectorAll('.quiz-question').forEach(q => q.classList.remove('active'));
+                qs.querySelector('.quiz-progress').style.display = 'none';
+                results.classList.add('show');
+                results.querySelector('.results-score').textContent = score + '/5';
+                const icon = results.querySelector('.results-icon');
+                const msg  = results.querySelector('.results-message');
+                if (score >= 4) { icon.className = 'results-icon excellent'; icon.innerHTML = '<i class="fas fa-trophy"></i>'; msg.textContent = 'Excellent! You\'ve mastered this topic!'; }
+                else if (score >= 2) { icon.className = 'results-icon good'; icon.innerHTML = '<i class="fas fa-star"></i>'; msg.textContent = 'Good job! Review the material for a higher score.'; }
+                else { icon.className = 'results-icon needs-work'; icon.innerHTML = '<i class="fas fa-book"></i>'; msg.textContent = 'Keep studying! Review and try again.'; }
+                quizProgress[quizId] = { completed: true, score };
+                updateProgress();
+            });
+        });
+
+        qs.querySelectorAll('.retry-quiz').forEach(btn => {
+            btn.addEventListener('click', () => {
+                current = 1; score = 0;
+                results.classList.remove('show');
+                qs.querySelector('.quiz-progress').style.display = 'flex';
+                progFill.style.width = '0%';
+                progText.textContent = 'Question 1 of 5';
+                qs.querySelectorAll('.quiz-question').forEach((q, i) => {
+                    q.classList.remove('answered');
+                    q.classList.toggle('active', i === 0);
+                    q.querySelectorAll('.quiz-option').forEach(o => { o.classList.remove('selected','correct','incorrect'); o.querySelector('input').checked = false; });
+                    q.querySelector('.quiz-feedback').className = 'quiz-feedback';
+                    q.querySelector('.quiz-feedback').textContent = '';
+                    const cb = q.querySelector('.check-answer'), nb = q.querySelector('.next-question'), fb = q.querySelector('.finish-quiz');
+                    if (cb) cb.style.display = 'inline-flex';
+                    if (nb) { nb.disabled = true; nb.style.display = 'inline-flex'; }
+                    if (fb) fb.style.display = 'none';
+                });
+            });
+        });
+    });
+
+    function updateProgress() {
+        const total = Object.values(quizProgress).reduce((s, p) => s + p.score, 0);
+        document.getElementById('overallProgress').textContent = Math.round(total / 25 * 100) + '%';
+    }
+
+    const scrollBtn = document.getElementById('scrollTop');
+    window.addEventListener('scroll', () => scrollBtn.classList.toggle('visible', window.scrollY > 300));
+    scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        const map = { storage:'isr', retrieval:'isr', database:'isr', index:'isr', types:'types', tps:'types', mis:'types', dss:'types', eis:'types', erp:'types', tools:'tools', cloud:'tools', analytics:'tools', quality:'quality', accuracy:'quality', completeness:'quality', governance:'governance', security:'governance', compliance:'governance', gdpr:'governance', hipaa:'governance', reflection:'reflection', reflect:'reflection', journey:'reflection', insight:'reflection' };
+        searchInput.addEventListener('keypress', e => {
+            if (e.key !== 'Enter') return;
+            const q = searchInput.value.toLowerCase();
+            for (const [key, sec] of Object.entries(map)) {
+                if (q.includes(key)) { showSection(sec); searchInput.value = ''; break; }
+            }
+        });
+    }
+</script>
+</body>
+</html>
