@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Digital Library - Learn about Information Management including storage, retrieval, systems, tools, quality, and governance.">
+    <meta name="theme-color" content="#1a6b8a">
+    <title>Digital Library - Information Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2D+oyLYDtcccstd/fm3XK2d/sy5Kgwp0d33G7sSMmTUJR34v8wWznMraAvw1KEZy60DQw==" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header role="banner">
+    <div class="header-content">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-book-open" aria-hidden="true"></i></div>
+            <div class="logo-text">
+                <h1>Digital Library</h1>
+                <span>Information Management</span>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="search-box">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <input type="text" placeholder="Search topics…" id="searchInput" aria-label="Search topics">
+            </div>
+        </div>
+    </div>
+</header>
+
+<nav role="navigation">
+    <div class="nav-container">
+        <ul class="nav-links">
+            <li><a href="#home" class="nav-link active" data-section="home"><i class="fas fa-home" aria-hidden="true"></i> Home</a></li>
+            <li><a href="#isr" class="nav-link" data-section="isr"><i class="fas fa-database" aria-hidden="true"></i> IS&R</a></li>
+            <li><a href="#types" class="nav-link" data-section="types"><i class="fas fa-sitemap" aria-hidden="true"></i> Types of IS</a></li>
+            <li><a href="#tools" class="nav-link" data-section="tools"><i class="fas fa-tools" aria-hidden="true"></i> Tools &amp; Tech</a></li>
+            <li><a href="#quality" class="nav-link" data-section="quality"><i class="fas fa-chart-line" aria-hidden="true"></i> Data Quality</a></li>
+            <li><a href="#governance" class="nav-link" data-section="governance"><i class="fas fa-shield-alt" aria-hidden="true"></i> Information Governance</a></li>
+            <li><a href="#reflection" class="nav-link reflection-nav" data-section="reflection"><i class="fas fa-pen-fancy" aria-hidden="true"></i> My Reflection</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main role="main">
+
+    <!-- ══════════ HOME ══════════ -->
+    <section id="home" class="content-section active" role="region" aria-label="Home">
+        <div class="welcome-section">
+            <div class="welcome-content">
+                <div class="welcome-badge"><i class="fas fa-star" aria-hidden="true"></i> Learning Resource</div>
+                <h2>Welcome to Information Management</h2>
+                <p>Explore how organizations collect, store, organize, and govern information. Comprehensive reading materials, educational videos, and interactive quizzes await you.</p>
+                <div class="quick-stats">
+                    <div class="stat-item"><div class="stat-number">5</div><div class="stat-label">Topics</div></div>
+                    <div class="stat-item"><div class="stat-number">15+</div><div class="stat-label">Videos</div></div>
+                    <div class="stat-item"><div class="stat-number">25</div><div class="stat-label">Quiz Questions</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-image-banner">
+            <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1400&q=80" alt="Library and information management bookshelf" loading="lazy">
+            <div class="hero-image-overlay"><h3>Knowledge Starts Here</h3></div>
+        </div>
+
+        <div class="section-heading"><i class="fas fa-book" aria-hidden="true"></i> Explore Topics</div>
+
+        <div class="topics-grid">
+            <div class="topic-card" data-topic="isr" role="button" tabindex="0" aria-label="Information Storage and Retrieval">
+                <div class="topic-card-image"><div class="img-placeholder"><i class="fas fa-database" aria-hidden="true"></i></div></div>
+                <h3>Information Storage &amp; Retrieval</h3>
+                <p>Learn about databases, indexing, search algorithms, and how information is organized for efficient access.</p>
+                <div class="topic-meta"><span><i class="fas fa-clock" aria-hidden="true"></i> 25 min</span><span><i class="fas fa-video" aria-hidden="true"></i> 3 videos</span></div>
+            </div>
+            <div class="topic-card" data-topic="types" role="button" tabindex="0" aria-label="Types of Information Systems">
+                <div class="topic-card-image"><div class="img-placeholder"><i class="fas fa-sitemap" aria-hidden="true"></i></div></div>
+                <h3>Types of Information Systems</h3>
+                <p>Discover TPS, MIS, DSS, EIS, ERP and understand their roles in organizations.</p>
+                <div class="topic-meta"><span><i class="fas fa-clock" aria-hidden="true"></i> 20 min</span><span><i class="fas fa-video" aria-hidden="true"></i> 3 videos</span></div>
+            </div>
+            <div class="topic-card" data-topic="tools" role="button" tabindex="0" aria-label="Tools and Technologies">
+                <div class="topic-card-image"><div class="img-placeholder"><i class="fas fa-tools" aria-hidden="true"></i></div></div>
+                <h3>Tools &amp; Technologies</h3>
+                <p>Explore databases, cloud computing, data analytics, and emerging technologies.</p>
+                <div class="topic-meta"><span><i class="fas fa-clock" aria-hidden="true"></i> 30 min</span><span><i class="fas fa-video" aria-hidden="true"></i> 3 videos</span></div>
+            </div>
+            <div class="topic-card" data-topic="quality" role="button" tabindex="0" aria-label="Data Quality Issues">
+                <div class="topic-card-image"><div class="img-placeholder"><i class="fas fa-chart-line" aria-hidden="true"></i></div></div>
+                <h3>Data Quality Issues</h3>
+                <p>Understand common data quality challenges and learn strategies to maintain accurate, reliable data.</p>
+                <div class="topic-meta"><span><i class="fas fa-clock" aria-hidden="true"></i> 20 min</span><span><i class="fas fa-video" aria-hidden="true"></i> 3 videos</span></div>
+            </div>
+            <div class="topic-card" data-topic="governance" role="button" tabindex="0" aria-label="Information Governance">
+                <div class="topic-card-image"><div class="img-placeholder"><i class="fas fa-shield-alt" aria-hidden="true"></i></div></div>
+                <h3>Information Governance</h3>
+                <p>Learn about policies, compliance, security frameworks, and best practices for information assets.</p>
+                <div class="topic-meta"><span><i class="fas fa-clock" aria-hidden="true"></i> 25 min</span><span><i class="fas fa-video" aria-hidden="true"></i> 3 videos</span></div>
+            </div>
+            <div class="topic-card reflection-card" data-topic="reflection" role="button" tabindex="0" aria-label="My Reflection">
+                <div class="topic-card-image"><div class="img-placeholder"><i class="fas fa-pen-fancy" aria-hidden="true"></i></div></div>
+                <h3>My Reflection</h3>
+                <p>Personal insights, key takeaways, and growth reflections from studying Information Management.</p>
+                <div class="topic-meta"><span><i class="fas fa-user" aria-hidden="true"></i> Personal</span><span><i class="fas fa-star" aria-hidden="true"></i> Featured</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Placeholder sections for content to be filled -->
+    <section id="isr" class="content-section" role="region" aria-label="Information Storage and Retrieval">
+        <div class="content-header">
+            <div class="breadcrumb"><a href="#home" class="nav-link" data-section="home">Home</a><i class="fas fa-chevron-right" aria-hidden="true"></i><span>Information Storage &amp; Retrieval</span></div>
+            <div class="content-title"><div class="icon-wrapper" style="background:linear-gradient(135deg,#1a6b8a,#2bb5a0);"><i class="fas fa-database" aria-hidden="true"></i></div><h2>Information Storage &amp; Retrieval</h2></div>
+            <p class="content-description">Understanding how information is stored, organized, indexed, and retrieved is fundamental to information management.</p>
+        </div>
+        <div class="content-tabs">
+            <button class="content-tab active" data-tab="isr-learn"><i class="fas fa-book-reader" aria-hidden="true"></i> Learn</button>
+            <button class="content-tab" data-tab="isr-videos"><i class="fas fa-video" aria-hidden="true"></i> Videos</button>
+            <button class="content-tab" data-tab="isr-quiz"><i class="fas fa-question-circle" aria-hidden="true"></i> Quiz</button>
+        </div>
+        <div id="isr-learn" class="tab-content active">
+            <div class="article-content">
+                <h3>Content Coming Soon</h3>
+                <p>This section is being prepared with comprehensive information about storage and retrieval systems.</p>
+            </div>
+        </div>
+        <div id="isr-videos" class="tab-content">
+            <div class="video-section">
+                <p>Video content coming soon...</p>
+            </div>
+        </div>
+        <div id="isr-quiz" class="tab-content">
+            <div class="quiz-section" data-quiz="isr">
+                <h3><i class="fas fa-brain" aria-hidden="true"></i> Test Your Knowledge</h3>
+                <p class="quiz-intro">Quiz content coming soon...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Similar placeholder sections for other topics -->
+    <section id="types" class="content-section" role="region" aria-label="Types of Information Systems">
+        <div class="content-header">
+            <div class="breadcrumb"><a href="#home" class="nav-link" data-section="home">Home</a><i class="fas fa-chevron-right" aria-hidden="true"></i><span>Types of Information Systems</span></div>
+            <h2>Types of Information Systems</h2>
+        </div>
+        <p>Content coming soon...</p>
+    </section>
+
+    <section id="tools" class="content-section" role="region" aria-label="Tools and Technologies">
+        <div class="content-header">
+            <h2>Tools &amp; Technologies</h2>
+        </div>
+        <p>Content coming soon...</p>
+    </section>
+
+    <section id="quality" class="content-section" role="region" aria-label="Data Quality Issues">
+        <div class="content-header">
+            <h2>Data Quality Issues</h2>
+        </div>
+        <p>Content coming soon...</p>
+    </section>
+
+    <section id="governance" class="content-section" role="region" aria-label="Information Governance">
+        <div class="content-header">
+            <h2>Information Governance</h2>
+        </div>
+        <p>Content coming soon...</p>
+    </section>
+
+    <section id="reflection" class="content-section" role="region" aria-label="My Reflection">
+        <div class="reflection-hero">
+            <div class="reflection-hero-content">
+                <div class="reflection-badge"><i class="fas fa-pen-fancy" aria-hidden="true"></i> Reflection</div>
+                <h2>Our Journey Through Information Management</h2>
+                <p>Personal insights and reflections from studying information management principles.</p>
+            </div>
+        </div>
+        <p>Reflection content coming soon...</p>
+    </section>
+
+</main>
+
+<footer role="contentinfo">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>About</h4>
+            <ul>
+                <li><a href="#home" class="nav-link" data-section="home">Home</a></li>
+                <li><a href="#" target="_blank" rel="noopener noreferrer">Contact</a></li>
+                <li><a href="#" target="_blank" rel="noopener noreferrer">Privacy</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Topics</h4>
+            <ul>
+                <li><a href="#isr" class="nav-link" data-section="isr">IS&amp;R</a></li>
+                <li><a href="#types" class="nav-link" data-section="types">Types of IS</a></li>
+                <li><a href="#tools" class="nav-link" data-section="tools">Tools &amp; Tech</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Learning</h4>
+            <ul>
+                <li><a href="#quality" class="nav-link" data-section="quality">Data Quality</a></li>
+                <li><a href="#governance" class="nav-link" data-section="governance">Governance</a></li>
+                <li><a href="#reflection" class="nav-link" data-section="reflection">Reflection</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 Digital Library - Information Management. All rights reserved.</p>
+    </div>
+</footer>
+
+<button class="scroll-top" id="scrollTop" aria-label="Scroll to top" title="Back to top"></button>
+
+<script src="script.js"></script>
+
+</body>
+</html>
